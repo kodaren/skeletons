@@ -1,6 +1,7 @@
 <script>
+  import {Sample} from './Sample.ts';
   import Button, {Label, Icon} from '@smui/button';
-  let clicked = 0;
+  let clicked = new Sample().clicked;
 </script>
 
 <style>
