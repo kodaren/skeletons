@@ -1,3 +1,4 @@
+import typescript from "rollup-plugin-typescript2";
 import autoPreprocess from "svelte-preprocess";
 import resolve from '@rollup/plugin-node-resolve';
 import replace from '@rollup/plugin-replace';
@@ -20,7 +21,7 @@ const onwarn = (warning, onwarn) =>
 
 export default {
 	client: {
-		input: config.client.input(),
+		input: config.client.input().replace(/\.js$/, ".ts"),
 		output: config.client.output(),
 		plugins: [
 			replace({
@@ -39,6 +40,7 @@ export default {
 				dedupe: ['svelte']
 			}),
 			commonjs(),
+			typescript(),
 			postcss({
 				extensions: ['.scss', '.sass'],
 				extract: false,
@@ -80,7 +82,7 @@ export default {
 	},
 
 	server: {
-		input: config.server.input(),
+		input: config.server.input().server.replace(/\.js$/, ".ts"),
 		output: config.server.output(),
 		plugins: [
 			replace({
@@ -97,6 +99,7 @@ export default {
 				dedupe: ['svelte']
 			}),
 			commonjs(),
+			typescript(),
 			postcss({
 				extensions: ['.scss', '.sass'],
 				extract: false,

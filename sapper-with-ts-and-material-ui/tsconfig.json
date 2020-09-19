@@ -1,20 +1,10 @@
 {
-    "include": ["src/**/*"],
-    "exclude": ["node_modules/*", "public/*"],
-    "compilerOptions": {
-      "target": "ESNEXT",
-      "lib": ["ESNEXT", "dom"],
-      "module": "ESNEXT",
-      "moduleResolution": "node",
-  
-      "esModuleInterop": true,
-      "allowSyntheticDefaultImports": true,
-      "strict": true,
-      "forceConsistentCasingInFileNames": true,
-      
-      "resolveJsonModule": true,
-      "isolatedModules": true,
-      "noEmit": true,
-      "strictNullChecks": true
-    }
+  "include": ["src/**/*"],
+  "exclude": ["node_modules/*"],
+  "compilerOptions": {
+      "target": "es2015",
+      "module": "es2015",
+      "types": ["svelte", "node"],
+      "typeRoots": ["typings"]
   }
+}

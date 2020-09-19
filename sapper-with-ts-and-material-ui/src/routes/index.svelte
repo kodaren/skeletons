@@ -40,7 +40,7 @@
 	<title>Sapper project template</title>
 </svelte:head>
 
-<h1>Audio Express</h1>
+<h1>Great stuff</h1>
 
 <Sample/>
 <figure>
