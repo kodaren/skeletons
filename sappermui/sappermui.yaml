@@ -1,0 +1,63 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+   name: sappermui
+   namespace: kodaren
+spec:
+   replicas: 1
+   selector:
+      matchLabels:
+         app: sappermui
+   template:
+      metadata:
+         labels:
+            app: sappermui
+      spec:
+         containers:
+            - name: sappermui
+              image: kodaren/sappermui
+---
+apiVersion: v1
+kind: Service
+metadata:
+   name: sappermui
+   namespace: kodaren
+   labels:
+      app: sappermui
+spec:
+   ports:
+      - port: 3000
+        name: sappermui
+   selector:
+      app: sappermui
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: l5d-header-middleware
+  namespace: kodaren
+spec:
+  headers:
+    customRequestHeaders:
+      l5d-dst-override: "sappermui.kodaren.svc.cluster.local:8080"
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: sappermui-ingress
+  namespace: kodaren
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`sappermui.kodaren.com`)
+      kind: Rule
+      middlewares:
+      - name: l5d-header-middleware
+      services:
+      - kind: Service
+        name: sappermui
+        port: 3000
+  tls:
+    certResolver: myresolver
+
