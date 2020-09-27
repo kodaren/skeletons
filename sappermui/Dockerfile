@@ -11,10 +11,12 @@ RUN npm install
 
 COPY ./src ./src
 
-RUN npm run build
+RUN npm run export
 
-EXPOSE 3000
+EXPOSE 5000
 
 ENV HOST=0.0.0.0
 
-CMD [ "node", "__sapper__/build"]
+CMD ["npx", "serve", "__sapper__/export"]
+#CMD ["npx", "serve", "__sapper__/export"]
+#CMD [ "node", "__sapper__/build"]

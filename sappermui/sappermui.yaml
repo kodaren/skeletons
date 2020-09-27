@@ -15,7 +15,17 @@ spec:
       spec:
          containers:
             - name: sappermui
-              image: kodaren/sappermui
+              image: kodaren/sappermui:0.0.1
+#              resources:
+#                limits:
+#                  memory: "200Mi"
+#                  cpu: "2"
+#                requests:
+#                 memory: "100Mi"
+#                  cpu: "1"
+#            args:
+#              - -cpus
+#              - "4"              
 ---
 apiVersion: v1
 kind: Service
@@ -26,7 +36,7 @@ metadata:
       app: sappermui
 spec:
    ports:
-      - port: 3000
+      - port: 5000
         name: sappermui
    selector:
       app: sappermui
@@ -57,7 +67,7 @@ spec:
       services:
       - kind: Service
         name: sappermui
-        port: 3000
+        port: 5000
   tls:
     certResolver: myresolver
 
