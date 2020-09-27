@@ -1,0 +1,63 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+   name: sveltestore
+   namespace: kodaren
+spec:
+   replicas: 1
+   selector:
+      matchLabels:
+         app: sveltestore
+   template:
+      metadata:
+         labels:
+            app: sveltestore
+      spec:
+         containers:
+            - name: sveltestore
+              image: kodaren/sveltestore:0.0.1
+---
+apiVersion: v1
+kind: Service
+metadata:
+   name: sveltestore
+   namespace: kodaren
+   labels:
+      app: sveltestore
+spec:
+   ports:
+      - port: 80
+        name: sveltestore
+   selector:
+      app: sveltestore
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: l5d-header-middleware
+  namespace: kodaren
+spec:
+  headers:
+    customRequestHeaders:
+      l5d-dst-override: "sveltestore.kodaren.svc.cluster.local:8080"
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: sveltestore-ingress
+  namespace: kodaren
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`sveltestore.kodaren.com`)
+      kind: Rule
+      middlewares:
+      - name: l5d-header-middleware
+      services:
+      - kind: Service
+        name: sveltestore
+        port: 80
+  tls:
+    certResolver: myresolver
+
