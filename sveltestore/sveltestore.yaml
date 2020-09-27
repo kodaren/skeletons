@@ -5,7 +5,7 @@ metadata:
    name: sveltestore
    namespace: kodaren
 spec:
-   replicas: 1
+   replicas: 4
    selector:
       matchLabels:
          app: sveltestore
