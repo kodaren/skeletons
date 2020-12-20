@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "u/9JlxxFkCbx5h2MtPD1pB+6ZZkW2z11q5Klsh74xuomtmVHnBwKppIBht4unKWuGEBfe/dbhRvOG/yHVo7mRg==",
+  "dgSpecHash": "EpqTXk3PIObJFjOs1pj2542D9/+Q0A2EBhQFJiBMXU5v7SwSGHdao1Goe9IvDrJx2gaWecGmbZamzyCHjeYpnA==",
   "success": true,
-  "projectFilePath": "c:\\git\\skeletons\\sapper-dotnetcore5\\src\\Domain\\Domain.csproj",
+  "projectFilePath": "C:\\git\\skeletons\\sapper-dotnetcore5\\src\\Domain\\Domain.csproj",
   "expectedPackageFiles": [],
   "logs": []
 }

@@ -858,11 +858,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "c:\\git\\skeletons\\sapper-dotnetcore5\\src\\Application\\Application.csproj",
+      "projectUniqueName": "C:\\git\\skeletons\\sapper-dotnetcore5\\src\\Application\\Application.csproj",
       "projectName": "SvelteStore.Application",
-      "projectPath": "c:\\git\\skeletons\\sapper-dotnetcore5\\src\\Application\\Application.csproj",
+      "projectPath": "C:\\git\\skeletons\\sapper-dotnetcore5\\src\\Application\\Application.csproj",
       "packagesPath": "C:\\Users\\kodar\\.nuget\\packages\\",
-      "outputPath": "c:\\git\\skeletons\\sapper-dotnetcore5\\src\\Application\\obj\\",
+      "outputPath": "C:\\git\\skeletons\\sapper-dotnetcore5\\src\\Application\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Microsoft\\Xamarin\\NuGet\\",
@@ -884,8 +884,8 @@
         "net5.0": {
           "targetAlias": "net5.0",
           "projectReferences": {
-            "c:\\git\\skeletons\\sapper-dotnetcore5\\src\\Domain\\Domain.csproj": {
-              "projectPath": "c:\\git\\skeletons\\sapper-dotnetcore5\\src\\Domain\\Domain.csproj"
+            "C:\\git\\skeletons\\sapper-dotnetcore5\\src\\Domain\\Domain.csproj": {
+              "projectPath": "C:\\git\\skeletons\\sapper-dotnetcore5\\src\\Domain\\Domain.csproj"
             }
           }
         }

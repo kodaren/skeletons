@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "c:\\git\\skeletons\\sapper-dotnetcore5\\src\\Domain\\Domain.csproj": {}
+    "C:\\git\\skeletons\\sapper-dotnetcore5\\src\\Domain\\Domain.csproj": {}
   },
   "projects": {
-    "c:\\git\\skeletons\\sapper-dotnetcore5\\src\\Domain\\Domain.csproj": {
+    "C:\\git\\skeletons\\sapper-dotnetcore5\\src\\Domain\\Domain.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "c:\\git\\skeletons\\sapper-dotnetcore5\\src\\Domain\\Domain.csproj",
+        "projectUniqueName": "C:\\git\\skeletons\\sapper-dotnetcore5\\src\\Domain\\Domain.csproj",
         "projectName": "SvelteStore.Domain",
-        "projectPath": "c:\\git\\skeletons\\sapper-dotnetcore5\\src\\Domain\\Domain.csproj",
+        "projectPath": "C:\\git\\skeletons\\sapper-dotnetcore5\\src\\Domain\\Domain.csproj",
         "packagesPath": "C:\\Users\\kodar\\.nuget\\packages\\",
-        "outputPath": "c:\\git\\skeletons\\sapper-dotnetcore5\\src\\Domain\\obj\\",
+        "outputPath": "C:\\git\\skeletons\\sapper-dotnetcore5\\src\\Domain\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Microsoft\\Xamarin\\NuGet\\",

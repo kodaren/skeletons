@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "Q0yLygLLTIQoAtI4ZhZppBWxy8Hkj6U9lVvpcfk1ndhU9HsEIFrtKtpUe6YEXOID0u3Rg1PBQS/ulxo21SqVsQ==",
+  "dgSpecHash": "aaXqUfNaW5vBB0tEuDdhJuQ96ww9wodwc5JlVTqwNR6eGSK6mwynd3aO3Mu0LLgcU6ZpzQH59/1aihM52c0oKQ==",
   "success": true,
-  "projectFilePath": "c:\\git\\skeletons\\sapper-dotnetcore5\\src\\Infrastructure\\Infrastructure.csproj",
+  "projectFilePath": "C:\\git\\skeletons\\sapper-dotnetcore5\\src\\Infrastructure\\Infrastructure.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\kodar\\.nuget\\packages\\automapper\\10.1.0\\automapper.10.1.0.nupkg.sha512",
     "C:\\Users\\kodar\\.nuget\\packages\\automapper.extensions.microsoft.dependencyinjection\\8.1.0\\automapper.extensions.microsoft.dependencyinjection.8.1.0.nupkg.sha512",
