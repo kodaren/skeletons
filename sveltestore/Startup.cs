@@ -3,21 +3,31 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
-namespace angcore
+namespace SvelteStore
 {
     public class Startup
     {
         private readonly bool UseProductionSpa;
-
+        private readonly ILogger<Startup> Logger;
         public Startup(IConfiguration configuration)
         {
+            var loggerFactory = LoggerFactory.Create(builder =>
+            {
+                builder.AddFilter("Microsoft", LogLevel.Warning)
+                       .AddFilter("System", LogLevel.Warning)
+                       .AddFilter("SvelteStore.Startup", LogLevel.Debug)
+                       .AddConsole();
+            });
+
+            Logger = loggerFactory.CreateLogger<Startup>();
             Configuration = configuration;
             if (configuration["useproductionspa"] != default)
             {
                 UseProductionSpa = bool.Parse(configuration["useproductionspa"]);
             }
-
+            Logger.LogDebug($"UseProductionSpa: {UseProductionSpa}");
         }
 
         public IConfiguration Configuration { get; }

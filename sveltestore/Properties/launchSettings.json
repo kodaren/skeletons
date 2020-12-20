@@ -8,7 +8,7 @@
     }
   },
   "profiles": {
-    "Console": {
+    "SvelteStore": {
       "commandName": "Project",
       "commandLineArgs": "useproductionspa=false",
       "launchBrowser": true,

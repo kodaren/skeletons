@@ -1,6 +1,6 @@
 using System;
 
-namespace angcore
+namespace SvelteStore
 {
     public class WeatherForecast
     {
