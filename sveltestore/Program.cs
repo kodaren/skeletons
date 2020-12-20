@@ -21,6 +21,10 @@ namespace angcore
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
+                }).ConfigureAppConfiguration(c =>
+                {
+                    c.AddCommandLine(args);
                 });
+
     }
 }

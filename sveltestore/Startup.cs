@@ -8,9 +8,16 @@ namespace angcore
 {
     public class Startup
     {
+        private readonly bool UseProductionSpa;
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+            if (configuration["useproductionspa"] != default)
+            {
+                UseProductionSpa = bool.Parse(configuration["useproductionspa"]);
+            }
+
         }
 
         public IConfiguration Configuration { get; }
@@ -19,7 +26,8 @@ namespace angcore
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
-            // In production, the Angular files will be served from this directory
+
+            // In production, the Svelte files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
             {
                 configuration.RootPath = "ClientApp/__sapper__/export";
@@ -41,8 +49,9 @@ namespace angcore
             }
 
             app.UseHttpsRedirection();
+ 
             app.UseStaticFiles();
-            if (!env.IsDevelopment())
+            if (!env.IsDevelopment() || UseProductionSpa)
             {
                 app.UseSpaStaticFiles();
             }
@@ -58,12 +67,9 @@ namespace angcore
 
             app.UseSpa(spa =>
             {
-                // To learn more about options for serving an Angular SPA from ASP.NET Core,
-                // see https://go.microsoft.com/fwlink/?linkid=864501
-
                 spa.Options.SourcePath = "ClientApp";
 
-                if (env.IsDevelopment())
+                if (env.IsDevelopment() && UseProductionSpa == false)
                 {
                     spa.UseProxyToSpaDevelopmentServer("http://localhost:3000");
                 }
