@@ -1,0 +1,48 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30804.86
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SvelteStore", "src\WebUI\SvelteStore.csproj", "{43CEBC1F-2BD1-4731-9A34-20E4D2AD62D0}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{18F1787D-6FD0-44DC-BA69-9AEE9F995FB3}"
+	ProjectSection(SolutionItems) = preProject
+		.dockerignore = .dockerignore
+		store.yaml = store.yaml
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain", "src\Domain\Domain.csproj", "{722EFDDD-6E00-43F6-893A-24EABF8F2BB7}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Application", "src\Application\Application.csproj", "{468D4172-6CA1-4580-95F7-A749EF7F0526}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure", "src\Infrastructure\Infrastructure.csproj", "{6C418FE3-5FEA-419A-8E14-781472AB78F5}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{43CEBC1F-2BD1-4731-9A34-20E4D2AD62D0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{43CEBC1F-2BD1-4731-9A34-20E4D2AD62D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{43CEBC1F-2BD1-4731-9A34-20E4D2AD62D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{43CEBC1F-2BD1-4731-9A34-20E4D2AD62D0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{722EFDDD-6E00-43F6-893A-24EABF8F2BB7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{722EFDDD-6E00-43F6-893A-24EABF8F2BB7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{722EFDDD-6E00-43F6-893A-24EABF8F2BB7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{722EFDDD-6E00-43F6-893A-24EABF8F2BB7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{468D4172-6CA1-4580-95F7-A749EF7F0526}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{468D4172-6CA1-4580-95F7-A749EF7F0526}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{468D4172-6CA1-4580-95F7-A749EF7F0526}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{468D4172-6CA1-4580-95F7-A749EF7F0526}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6C418FE3-5FEA-419A-8E14-781472AB78F5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6C418FE3-5FEA-419A-8E14-781472AB78F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6C418FE3-5FEA-419A-8E14-781472AB78F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6C418FE3-5FEA-419A-8E14-781472AB78F5}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B1894043-D577-4973-977B-42043DABFB1D}
+	EndGlobalSection
+EndGlobal

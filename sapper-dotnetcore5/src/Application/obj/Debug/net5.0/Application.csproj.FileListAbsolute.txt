@@ -1,0 +1,15 @@
+c:\git\skeletons\sapper-dotnetcore5\src\Application\bin\Debug\net5.0\SvelteStore.Application.deps.json
+c:\git\skeletons\sapper-dotnetcore5\src\Application\bin\Debug\net5.0\SvelteStore.Application.dll
+c:\git\skeletons\sapper-dotnetcore5\src\Application\bin\Debug\net5.0\ref\SvelteStore.Application.dll
+c:\git\skeletons\sapper-dotnetcore5\src\Application\bin\Debug\net5.0\SvelteStore.Application.pdb
+c:\git\skeletons\sapper-dotnetcore5\src\Application\bin\Debug\net5.0\SvelteStore.Domain.dll
+c:\git\skeletons\sapper-dotnetcore5\src\Application\bin\Debug\net5.0\SvelteStore.Domain.pdb
+c:\git\skeletons\sapper-dotnetcore5\src\Application\obj\Debug\net5.0\Application.csprojAssemblyReference.cache
+c:\git\skeletons\sapper-dotnetcore5\src\Application\obj\Debug\net5.0\Application.GeneratedMSBuildEditorConfig.editorconfig
+c:\git\skeletons\sapper-dotnetcore5\src\Application\obj\Debug\net5.0\Application.AssemblyInfoInputs.cache
+c:\git\skeletons\sapper-dotnetcore5\src\Application\obj\Debug\net5.0\Application.AssemblyInfo.cs
+c:\git\skeletons\sapper-dotnetcore5\src\Application\obj\Debug\net5.0\Application.csproj.CoreCompileInputs.cache
+c:\git\skeletons\sapper-dotnetcore5\src\Application\obj\Debug\net5.0\Application.csproj.CopyComplete
+c:\git\skeletons\sapper-dotnetcore5\src\Application\obj\Debug\net5.0\SvelteStore.Application.dll
+c:\git\skeletons\sapper-dotnetcore5\src\Application\obj\Debug\net5.0\ref\SvelteStore.Application.dll
+c:\git\skeletons\sapper-dotnetcore5\src\Application\obj\Debug\net5.0\SvelteStore.Application.pdb

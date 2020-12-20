@@ -1,0 +1,11 @@
+c:\git\skeletons\sapper-dotnetcore5\src\Domain\bin\Debug\net5.0\SvelteStore.Domain.deps.json
+c:\git\skeletons\sapper-dotnetcore5\src\Domain\bin\Debug\net5.0\SvelteStore.Domain.dll
+c:\git\skeletons\sapper-dotnetcore5\src\Domain\bin\Debug\net5.0\ref\SvelteStore.Domain.dll
+c:\git\skeletons\sapper-dotnetcore5\src\Domain\bin\Debug\net5.0\SvelteStore.Domain.pdb
+c:\git\skeletons\sapper-dotnetcore5\src\Domain\obj\Debug\net5.0\Domain.GeneratedMSBuildEditorConfig.editorconfig
+c:\git\skeletons\sapper-dotnetcore5\src\Domain\obj\Debug\net5.0\Domain.AssemblyInfoInputs.cache
+c:\git\skeletons\sapper-dotnetcore5\src\Domain\obj\Debug\net5.0\Domain.AssemblyInfo.cs
+c:\git\skeletons\sapper-dotnetcore5\src\Domain\obj\Debug\net5.0\Domain.csproj.CoreCompileInputs.cache
+c:\git\skeletons\sapper-dotnetcore5\src\Domain\obj\Debug\net5.0\SvelteStore.Domain.dll
+c:\git\skeletons\sapper-dotnetcore5\src\Domain\obj\Debug\net5.0\ref\SvelteStore.Domain.dll
+c:\git\skeletons\sapper-dotnetcore5\src\Domain\obj\Debug\net5.0\SvelteStore.Domain.pdb
