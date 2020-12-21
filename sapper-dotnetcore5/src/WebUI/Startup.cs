@@ -1,27 +1,25 @@
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using FluentValidation.AspNetCore;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.SpaServices.AngularCli;
 using NSwag;
 using NSwag.Generation.Processors.Security;
-using System.Linq;
+using SvelteStore.Application;
 using SvelteStore.Application.Common.Interfaces;
-using SvelteStore.WebUI.Services;
+using SvelteStore.Infrastructure;
 using SvelteStore.Infrastructure.Persistence;
 using SvelteStore.WebUI.Filters;
-using SvelteStore.Application;
-using SvelteStore.Infrastructure;
+using SvelteStore.WebUI.Services;
+using System.Linq;
 
 namespace SvelteStore
 {
     public class Startup
     {
-        private readonly bool UseProductionSpa;
         private readonly ILogger<Startup> Logger;
         public Startup(IConfiguration configuration)
         {
@@ -35,11 +33,6 @@ namespace SvelteStore
 
             Logger = loggerFactory.CreateLogger<Startup>();
             Configuration = configuration;
-            if (configuration["useproductionspa"] != default)
-            {
-                UseProductionSpa = bool.Parse(configuration["useproductionspa"]);
-            }
-            Logger.LogDebug($"UseProductionSpa: {UseProductionSpa}");
         }
 
         public IConfiguration Configuration { get; }
@@ -59,6 +52,26 @@ namespace SvelteStore
             services.AddHealthChecks()
                 .AddDbContextCheck<ApplicationDbContext>();
 
+            services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(
+                    builder =>
+                    {
+                        builder.WithOrigins("http://localhost:3000")
+                                          .AllowAnyHeader()
+                                          .AllowAnyMethod();
+                    }
+                );
+                //options.AddPolicy(name: IdentityClientOrigins,
+                //                  builder =>
+                //                  {
+                //                      builder.WithOrigins("http://localhost:3000")
+                //                      .AllowAnyHeader()
+                //                      .AllowAnyMethod()
+                //                      ;
+                //                  });
+            });
+
             services.AddControllersWithViews(options =>
                 options.Filters.Add<ApiExceptionFilterAttribute>())
                     .AddFluentValidation();
@@ -69,12 +82,6 @@ namespace SvelteStore
             services.Configure<ApiBehaviorOptions>(options =>
             {
                 options.SuppressModelStateInvalidFilter = true;
-            });
-
-            // In production, the Svelte files will be served from this directory
-            services.AddSpaStaticFiles(configuration =>
-            {
-                configuration.RootPath = "ClientApp/__sapper__/export";
             });
 
             services.AddOpenApiDocument(configure =>
@@ -112,11 +119,6 @@ namespace SvelteStore
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
-            if (!env.IsDevelopment() || UseProductionSpa)
-            {
-                app.UseSpaStaticFiles();
-            }
-
             app.UseSwaggerUi3(settings =>
             {
                 settings.Path = "/api";
@@ -124,6 +126,8 @@ namespace SvelteStore
             });
 
             app.UseRouting();
+
+            app.UseCors();
 
             app.UseAuthentication();
             app.UseIdentityServer();
@@ -136,15 +140,6 @@ namespace SvelteStore
                 endpoints.MapRazorPages();
             });
 
-            app.UseSpa(spa =>
-            {
-                spa.Options.SourcePath = "ClientApp";
-
-                if (env.IsDevelopment() && UseProductionSpa == false)
-                {
-                    spa.UseProxyToSpaDevelopmentServer("http://localhost:3000");
-                }
-            });
         }
     }
 }

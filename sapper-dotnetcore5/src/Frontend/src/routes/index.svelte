@@ -1,5 +1,5 @@
 <script>
-  import Sample from '../components/Sample.svelte';
+	import successkid from 'images/successkid.jpg';
 </script>
 
 <style>
@@ -37,15 +37,14 @@
 </style>
 
 <svelte:head>
-	<title>Sapper Material and .Net Core template</title>
+	<title>Sapper project template</title>
 </svelte:head>
 
-<h1>Great stuff</h1>
+<h1>Great success!</h1>
 
-<Sample/>
 <figure>
-	<img alt='Success Kid' src='successkid.jpg'>
-	<figcaption>Have fun with the Sapper!</figcaption>
+	<img alt="Success Kid" src="{successkid}">
+	<figcaption>Have fun with Sapper!</figcaption>
 </figure>
 
 <p><strong>Try editing this file (src/routes/index.svelte) to test live reloading.</strong></p>

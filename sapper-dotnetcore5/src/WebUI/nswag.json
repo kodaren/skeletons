@@ -1,4 +1,4 @@
-﻿{
+{
   "runtime": "Net50",
   "defaultVariables": null,
   "documentGenerator": {
@@ -48,6 +48,7 @@
       "allowNullableBodyParameters": true,
       "output": "wwwroot/api/specification.json",
       "outputType": "OpenApi3",
+      "newLineBehavior": "Auto",
       "assemblyPaths": [],
       "assemblyConfig": null,
       "referencePaths": [],
@@ -60,7 +61,7 @@
       "moduleName": "",
       "namespace": "",
       "typeScriptVersion": 2.7,
-      "template": "Angular",
+      "template": "Axios",
       "promiseType": "Promise",
       "httpClass": "HttpClient",
       "withCredentials": false,
@@ -89,6 +90,8 @@
       "markOptionalProperties": true,
       "generateCloneMethod": false,
       "typeStyle": "Class",
+      "enumStyle": "Enum",
+      "useLeafType": false,
       "classTypes": [],
       "extendedClasses": [],
       "extensionCode": null,
@@ -102,6 +105,7 @@
       "useGetBaseUrlMethod": false,
       "baseUrlTokenName": "API_BASE_URL",
       "queryNullValue": "",
+      "useAbortSignal": false,
       "inlineNamedDictionaries": false,
       "inlineNamedAny": false,
       "templateDirectory": null,
@@ -110,7 +114,8 @@
       "enumNameGeneratorType": null,
       "serviceHost": null,
       "serviceSchemes": null,
-      "output": "ClientApp/src/app/web-api-client.ts"
+      "output": "../Frontend/src/app/web-api-client.ts",
+      "newLineBehavior": "Auto"
     }
   }
 }

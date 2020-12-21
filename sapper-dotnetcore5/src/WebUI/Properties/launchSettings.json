@@ -10,12 +10,12 @@
   "profiles": {
     "SvelteStore": {
       "commandName": "Project",
-      "commandLineArgs": "useproductionspa=false",
       "launchBrowser": true,
+      "launchUrl": "api",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
-      "applicationUrl": "https://localhost:5000"
+      "applicationUrl": "https://localhost:44300"
     },
     "IIS Express": {
       "commandName": "Project",
@@ -24,7 +24,7 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
-      "applicationUrl": "https://localhost:5001;http://localhost:5000"
+      "applicationUrl": "https://localhost:44300"
     }
   }
 }
