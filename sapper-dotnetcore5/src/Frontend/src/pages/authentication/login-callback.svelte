@@ -1,9 +1,6 @@
 <script lang="ts">
 import { goto } from '@roxi/routify';
 
-import { AuthenticationResultStatus } from '../../api-authorization/authorize.service';
-
-
 import { authStore, redirectToPageEvent  } from '../../oauth'
 
 let message: string

@@ -1,5 +1,5 @@
 import { User, UserManager } from 'oidc-client'
-import { derived, readable, writable } from 'svelte/store'
+import { derived, Readable, readable, writable } from 'svelte/store'
 import { ApplicationPaths, ApplicationName, Authority } from './api-authorization.constants'
 
 export type IAuthenticationResult =
@@ -57,16 +57,23 @@ export class AuthorizeService {
 
   public getUser(): Promise<IUser> {
     return new Promise((resolve) => {
-      derived([this.userSubject, this.getUserFromStorage], ([$a, $b]) => {
-        console.log("$a", $a)
-        console.log("$b", $b)
-        return $a ? $a : $b
-      }).subscribe(u =>  {
-        if (u) resolve(u)
-      })
+      this.getUserStore().subscribe(u => resolve(u));
     })
   }
 
+  public getUserStore(): Readable<IUser> {
+    return derived([this.userSubject, this.getUserFromStorage], ([$a, $b]) => {
+      return $a ? $a : $b
+    })
+  }
+
+  public async getUserFromStorage2(): Promise<IUser | null>
+  {
+    await this.ensureUserManagerInitialized()
+    return await this.userManager.getUser().then(u => u && u.profile);
+
+  }
+  
   public async getAccessToken(): Promise<string> {
     await this.ensureUserManagerInitialized()
     return await this.userManager.getUser().then(u => u && u.access_token)
@@ -196,13 +203,7 @@ export class AuthorizeService {
     const settings: any = await response.json()
     console.table("Loaded OIDC settings", settings)
 
-    settings.automaticSilentRenew = true
-    settings.includeIdTokenInSilentRenew = true
-    //settings.silent_redirect_uri = settings.redirect_uri
-    // settings.redirect_uri = `${this.baseHref}${ApplicationPaths.LoginCallback}`
-    // settings.post_logout_redirect_uri = `${this.baseHref}${ApplicationPaths.LogOutCallback}`
     this.userManager = new UserManager(settings)
-
     this.userManager.events.addUserSignedOut(async () => {
       await this.userManager.removeUser()
       this.userSubject.set(null)
