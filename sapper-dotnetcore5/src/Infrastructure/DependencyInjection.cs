@@ -38,7 +38,20 @@ namespace SvelteStore.Infrastructure
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
             services.AddIdentityServer()
-                .AddApiAuthorization<ApplicationUser, ApplicationDbContext>();
+                //.AddApiAuthorization<ApplicationUser, ApplicationDbContext>(options =>
+                //{
+                //    options.Clients.AddIdentityServerSPA(
+                //        "SvelteStore2", spa =>
+
+                //        spa.WithRedirectUri("http://localhost:5000/authentication/login-callback")
+                //            .WithLogoutRedirectUri(
+                //                "http://localhost:5000/authentication/logout-callback"));
+
+                //    options.ApiResources.AddApiResource("SvelteStore2API", resource =>
+                //        resource.WithScopes("a", "b", "c"));
+                //});
+                .AddApiAuthorization<ApplicationUser, ApplicationDbContext>()
+                .AddRedirectUriValidator<CustomRedirectUriValidator>();
 
             services.AddTransient<IDateTime, DateTimeService>();
             services.AddTransient<IIdentityService, IdentityService>();

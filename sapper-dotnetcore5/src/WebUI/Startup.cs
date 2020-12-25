@@ -33,6 +33,8 @@ namespace SvelteStore
 
             Logger = loggerFactory.CreateLogger<Startup>();
             Configuration = configuration;
+
+            
         }
 
         public IConfiguration Configuration { get; }
@@ -51,13 +53,12 @@ namespace SvelteStore
 
             services.AddHealthChecks()
                 .AddDbContextCheck<ApplicationDbContext>();
-
             services.AddCors(options =>
             {
                 options.AddDefaultPolicy(
                     builder =>
                     {
-                        builder.WithOrigins("http://localhost:3000")
+                        builder.WithOrigins("http://localhost:3000", "http://localhost:5000")
                                           .AllowAnyHeader()
                                           .AllowAnyMethod();
                     }
@@ -71,6 +72,8 @@ namespace SvelteStore
                 //                      ;
                 //                  });
             });
+
+            
 
             services.AddControllersWithViews(options =>
                 options.Filters.Add<ApiExceptionFilterAttribute>())
@@ -130,13 +133,18 @@ namespace SvelteStore
             app.UseCors();
 
             app.UseAuthentication();
+
             app.UseIdentityServer();
+
+            //app.AddInMemoryClients(Configuration.GetSection("IdentityServer4:Clients"));
+
             app.UseAuthorization();
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllerRoute(
-                    name: "default",
-                    pattern: "{controller}/{action=Index}/{id?}");
+                endpoints.MapDefaultControllerRoute();
+                //endpoints.MapControllerRoute(
+                //    name: "default",
+                //    pattern: "{controller}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
             });
 

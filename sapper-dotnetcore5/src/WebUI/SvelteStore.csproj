@@ -6,6 +6,8 @@
 
   <PropertyGroup Condition=" '$(RunConfiguration)' == 'SvelteStore' " />
   <ItemGroup>
+    <PackageReference Include="IdentityModel" Version="4.5.0" />
+    <PackageReference Include="IdentityServer4" Version="4.1.1" />
     <PackageReference Include="Microsoft.Extensions.Configuration.CommandLine" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="5.0.0" />
   </ItemGroup>
