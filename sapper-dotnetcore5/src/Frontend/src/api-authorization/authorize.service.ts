@@ -38,6 +38,7 @@ export class AuthorizeService {
   private popUpDisabled = true
   private userManager: UserManager
   private userSubject = writable<IUser | null>(null)
+
   private getUserFromStorage = readable<IUser>(null, set => {
     const somefunc = async () => {
       await this.ensureUserManagerInitialized()
@@ -97,8 +98,11 @@ export class AuthorizeService {
       return this.success(state)
     } catch (silentError) {
       // User might not be authenticated, fallback to popup authentication
-      console.log('Silent authentication error: ', silentError)
-
+      if (await this.isAuthenticated())
+      {
+        console.log('Silent authentication error: ', silentError)
+      }
+      
       try {
         if (this.popUpDisabled) {
           throw new Error('Popup disabled. Change \'authorize.service.ts:AuthorizeService.popupDisabled\' to false to enable it.')

@@ -1,9 +1,8 @@
 <script lang="ts">
 	import { authStore } from '../../oauth'
-	const { signin } = authStore
 
 	async function doSignin() {
-		await signin()
+		await authStore.signin()
 	}
 </script>
 

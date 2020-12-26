@@ -1,15 +1,13 @@
 <script lang="ts">
+    import { authStore } from "../../oauth";
 
-import { authStore  } from '../../oauth'
+    let message: string;
 
-let message: string
-
-authStore.message.subscribe(m => message = m);
-console.log("Login failed")
-
+    authStore.message.subscribe((m) => (message = m));
+    console.log("Login failed");
 </script>
 
 <p>Login failed</p>
 {#if message}
-<p>{message}</p>
+    <p>{message}</p>
 {/if}

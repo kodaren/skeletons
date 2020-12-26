@@ -7,7 +7,7 @@
   setTimeout(() => window.routify.inBrowser && authStore.init()) 
 </script>
 
-<style  global>
+<style global>
   @import "../assets/global.css";
 </style>
 

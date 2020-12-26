@@ -22,8 +22,6 @@ function createAuthStore() {
                     user.set(u)
                     authenticated.set(true)
                 }
-
-                console.log("user value changed", u)
             })
         loading.set(false)
     }
@@ -31,7 +29,6 @@ function createAuthStore() {
     async function signin() {
         const returnUrl = window.location.href
         message.set(undefined)
-        console.log("returnUrl", returnUrl)
         //display popup
         const result = await authorizeService.signIn({ returnUrl })
         switch (result.status) {
@@ -53,7 +50,6 @@ function createAuthStore() {
 
 
     async function processLoginCallback(): Promise<void> {
-        console.log("processLoginCallback")
         const url = window.location.href
         const result = await authorizeService.completeSignIn(url)
         switch (result.status) {
@@ -61,8 +57,6 @@ function createAuthStore() {
                 // There should not be any redirects as completeSignIn never redirects.
                 throw new Error('Should not redirect.')
             case AuthenticationResultStatus.Success:
-                //user.set(await authorizeService.getUser())
-                //authenticated.set(true)
                 const returnUrl = getLoggedInReturnUrl(result.state)
                 redirectToPageEvent.set(returnUrl)
                 break
@@ -80,6 +74,7 @@ function createAuthStore() {
         authenticated.set(false)
         user.set(undefined)
 
+        
         if (isauthenticated) {
             console.log("signout authenticated user")
             const result = await authorizeService.signOut(state)

@@ -7,7 +7,26 @@
 //----------------------
 // ReSharper disable InconsistentNaming
 
-import axios, { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse, CancelToken } from 'axios';
+export class ClientBase {
+    /**
+     * authorization token value
+     */
+    public token: string
+
+    constructor() {
+        this.token = null
+    }
+
+    protected transformOptions(options: any) {
+
+        if (this.token) {
+            options.headers["Authorization"] = "bearer " + this.token
+        } else {
+            console.warn("Authorization token have not been set please authorize first.");
+        }
+        return Promise.resolve(options);
+    }
+}
 
 export interface ITodoItemsClient {
     getTodoItemsWithPagination(listId: number | undefined, pageNumber: number | undefined, pageSize: number | undefined): Promise<PaginatedListOfTodoItemDto>;
@@ -17,17 +36,18 @@ export interface ITodoItemsClient {
     updateItemDetails(id: number | undefined, command: UpdateTodoItemDetailCommand): Promise<FileResponse>;
 }
 
-export class TodoItemsClient implements ITodoItemsClient {
-    private instance: AxiosInstance;
+export class TodoItemsClient extends ClientBase implements ITodoItemsClient {
+    private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
     private baseUrl: string;
     protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
 
-    constructor(baseUrl?: string, instance?: AxiosInstance) {
-        this.instance = instance ? instance : axios.create();
+    constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+        super();
+        this.http = http ? http : <any>window;
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
 
-    getTodoItemsWithPagination(listId: number | undefined, pageNumber: number | undefined, pageSize: number | undefined , cancelToken?: CancelToken | undefined): Promise<PaginatedListOfTodoItemDto> {
+    getTodoItemsWithPagination(listId: number | undefined, pageNumber: number | undefined, pageSize: number | undefined): Promise<PaginatedListOfTodoItemDto> {
         let url_ = this.baseUrl + "/api/TodoItems?";
         if (listId === null)
             throw new Error("The parameter 'listId' cannot be null.");
@@ -43,101 +63,79 @@ export class TodoItemsClient implements ITodoItemsClient {
             url_ += "PageSize=" + encodeURIComponent("" + pageSize) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
-        let options_ = <AxiosRequestConfig>{
+        let options_ = <RequestInit>{
             method: "GET",
-            url: url_,
             headers: {
                 "Accept": "application/json"
-            },
-            cancelToken
+            }
         };
 
-        return this.instance.request(options_).catch((_error: any) => {
-            if (isAxiosError(_error) && _error.response) {
-                return _error.response;
-            } else {
-                throw _error;
-            }
-        }).then((_response: AxiosResponse) => {
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
             return this.processGetTodoItemsWithPagination(_response);
         });
     }
 
-    protected processGetTodoItemsWithPagination(response: AxiosResponse): Promise<PaginatedListOfTodoItemDto> {
+    protected processGetTodoItemsWithPagination(response: Response): Promise<PaginatedListOfTodoItemDto> {
         const status = response.status;
-        let _headers: any = {};
-        if (response.headers && typeof response.headers === "object") {
-            for (let k in response.headers) {
-                if (response.headers.hasOwnProperty(k)) {
-                    _headers[k] = response.headers[k];
-                }
-            }
-        }
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
-            const _responseText = response.data;
+            return response.text().then((_responseText) => {
             let result200: any = null;
-            let resultData200  = _responseText;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
             result200 = PaginatedListOfTodoItemDto.fromJS(resultData200);
             return result200;
+            });
         } else if (status !== 200 && status !== 204) {
-            const _responseText = response.data;
+            return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
         }
         return Promise.resolve<PaginatedListOfTodoItemDto>(<any>null);
     }
 
-    create(command: CreateTodoItemCommand , cancelToken?: CancelToken | undefined): Promise<number> {
+    create(command: CreateTodoItemCommand): Promise<number> {
         let url_ = this.baseUrl + "/api/TodoItems";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(command);
 
-        let options_ = <AxiosRequestConfig>{
-            data: content_,
+        let options_ = <RequestInit>{
+            body: content_,
             method: "POST",
-            url: url_,
             headers: {
                 "Content-Type": "application/json",
                 "Accept": "application/json"
-            },
-            cancelToken
+            }
         };
 
-        return this.instance.request(options_).catch((_error: any) => {
-            if (isAxiosError(_error) && _error.response) {
-                return _error.response;
-            } else {
-                throw _error;
-            }
-        }).then((_response: AxiosResponse) => {
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
             return this.processCreate(_response);
         });
     }
 
-    protected processCreate(response: AxiosResponse): Promise<number> {
+    protected processCreate(response: Response): Promise<number> {
         const status = response.status;
-        let _headers: any = {};
-        if (response.headers && typeof response.headers === "object") {
-            for (let k in response.headers) {
-                if (response.headers.hasOwnProperty(k)) {
-                    _headers[k] = response.headers[k];
-                }
-            }
-        }
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
-            const _responseText = response.data;
+            return response.text().then((_responseText) => {
             let result200: any = null;
-            let resultData200  = _responseText;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
             result200 = resultData200 !== undefined ? resultData200 : <any>null;
             return result200;
+            });
         } else if (status !== 200 && status !== 204) {
-            const _responseText = response.data;
+            return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
         }
         return Promise.resolve<number>(<any>null);
     }
 
-    update(id: number, command: UpdateTodoItemCommand , cancelToken?: CancelToken | undefined): Promise<FileResponse> {
+    update(id: number, command: UpdateTodoItemCommand): Promise<FileResponse> {
         let url_ = this.baseUrl + "/api/TodoItems/{id}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
@@ -146,102 +144,76 @@ export class TodoItemsClient implements ITodoItemsClient {
 
         const content_ = JSON.stringify(command);
 
-        let options_ = <AxiosRequestConfig>{
-            data: content_,
-            responseType: "blob",
+        let options_ = <RequestInit>{
+            body: content_,
             method: "PUT",
-            url: url_,
             headers: {
                 "Content-Type": "application/json",
                 "Accept": "application/octet-stream"
-            },
-            cancelToken
+            }
         };
 
-        return this.instance.request(options_).catch((_error: any) => {
-            if (isAxiosError(_error) && _error.response) {
-                return _error.response;
-            } else {
-                throw _error;
-            }
-        }).then((_response: AxiosResponse) => {
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
             return this.processUpdate(_response);
         });
     }
 
-    protected processUpdate(response: AxiosResponse): Promise<FileResponse> {
+    protected processUpdate(response: Response): Promise<FileResponse> {
         const status = response.status;
-        let _headers: any = {};
-        if (response.headers && typeof response.headers === "object") {
-            for (let k in response.headers) {
-                if (response.headers.hasOwnProperty(k)) {
-                    _headers[k] = response.headers[k];
-                }
-            }
-        }
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200 || status === 206) {
-            const contentDisposition = response.headers ? response.headers["content-disposition"] : undefined;
+            const contentDisposition = response.headers ? response.headers.get("content-disposition") : undefined;
             const fileNameMatch = contentDisposition ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition) : undefined;
             const fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined;
-            return Promise.resolve({ fileName: fileName, status: status, data: response.data as Blob, headers: _headers });
+            return response.blob().then(blob => { return { fileName: fileName, data: blob, status: status, headers: _headers }; });
         } else if (status !== 200 && status !== 204) {
-            const _responseText = response.data;
+            return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
         }
         return Promise.resolve<FileResponse>(<any>null);
     }
 
-    delete(id: number , cancelToken?: CancelToken | undefined): Promise<FileResponse> {
+    delete(id: number): Promise<FileResponse> {
         let url_ = this.baseUrl + "/api/TodoItems/{id}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id));
         url_ = url_.replace(/[?&]$/, "");
 
-        let options_ = <AxiosRequestConfig>{
-            responseType: "blob",
+        let options_ = <RequestInit>{
             method: "DELETE",
-            url: url_,
             headers: {
                 "Accept": "application/octet-stream"
-            },
-            cancelToken
+            }
         };
 
-        return this.instance.request(options_).catch((_error: any) => {
-            if (isAxiosError(_error) && _error.response) {
-                return _error.response;
-            } else {
-                throw _error;
-            }
-        }).then((_response: AxiosResponse) => {
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
             return this.processDelete(_response);
         });
     }
 
-    protected processDelete(response: AxiosResponse): Promise<FileResponse> {
+    protected processDelete(response: Response): Promise<FileResponse> {
         const status = response.status;
-        let _headers: any = {};
-        if (response.headers && typeof response.headers === "object") {
-            for (let k in response.headers) {
-                if (response.headers.hasOwnProperty(k)) {
-                    _headers[k] = response.headers[k];
-                }
-            }
-        }
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200 || status === 206) {
-            const contentDisposition = response.headers ? response.headers["content-disposition"] : undefined;
+            const contentDisposition = response.headers ? response.headers.get("content-disposition") : undefined;
             const fileNameMatch = contentDisposition ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition) : undefined;
             const fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined;
-            return Promise.resolve({ fileName: fileName, status: status, data: response.data as Blob, headers: _headers });
+            return response.blob().then(blob => { return { fileName: fileName, data: blob, status: status, headers: _headers }; });
         } else if (status !== 200 && status !== 204) {
-            const _responseText = response.data;
+            return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
         }
         return Promise.resolve<FileResponse>(<any>null);
     }
 
-    updateItemDetails(id: number | undefined, command: UpdateTodoItemDetailCommand , cancelToken?: CancelToken | undefined): Promise<FileResponse> {
+    updateItemDetails(id: number | undefined, command: UpdateTodoItemDetailCommand): Promise<FileResponse> {
         let url_ = this.baseUrl + "/api/TodoItems/UpdateItemDetails?";
         if (id === null)
             throw new Error("The parameter 'id' cannot be null.");
@@ -251,47 +223,34 @@ export class TodoItemsClient implements ITodoItemsClient {
 
         const content_ = JSON.stringify(command);
 
-        let options_ = <AxiosRequestConfig>{
-            data: content_,
-            responseType: "blob",
+        let options_ = <RequestInit>{
+            body: content_,
             method: "PUT",
-            url: url_,
             headers: {
                 "Content-Type": "application/json",
                 "Accept": "application/octet-stream"
-            },
-            cancelToken
+            }
         };
 
-        return this.instance.request(options_).catch((_error: any) => {
-            if (isAxiosError(_error) && _error.response) {
-                return _error.response;
-            } else {
-                throw _error;
-            }
-        }).then((_response: AxiosResponse) => {
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
             return this.processUpdateItemDetails(_response);
         });
     }
 
-    protected processUpdateItemDetails(response: AxiosResponse): Promise<FileResponse> {
+    protected processUpdateItemDetails(response: Response): Promise<FileResponse> {
         const status = response.status;
-        let _headers: any = {};
-        if (response.headers && typeof response.headers === "object") {
-            for (let k in response.headers) {
-                if (response.headers.hasOwnProperty(k)) {
-                    _headers[k] = response.headers[k];
-                }
-            }
-        }
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200 || status === 206) {
-            const contentDisposition = response.headers ? response.headers["content-disposition"] : undefined;
+            const contentDisposition = response.headers ? response.headers.get("content-disposition") : undefined;
             const fileNameMatch = contentDisposition ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition) : undefined;
             const fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined;
-            return Promise.resolve({ fileName: fileName, status: status, data: response.data as Blob, headers: _headers });
+            return response.blob().then(blob => { return { fileName: fileName, data: blob, status: status, headers: _headers }; });
         } else if (status !== 200 && status !== 204) {
-            const _responseText = response.data;
+            return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
         }
         return Promise.resolve<FileResponse>(<any>null);
     }
@@ -305,165 +264,131 @@ export interface ITodoListsClient {
     delete(id: number): Promise<FileResponse>;
 }
 
-export class TodoListsClient implements ITodoListsClient {
-    private instance: AxiosInstance;
+export class TodoListsClient extends ClientBase implements ITodoListsClient {
+    private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
     private baseUrl: string;
     protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
 
-    constructor(baseUrl?: string, instance?: AxiosInstance) {
-        this.instance = instance ? instance : axios.create();
+    constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+        super();
+        this.http = http ? http : <any>window;
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
 
-    get(  cancelToken?: CancelToken | undefined): Promise<TodosVm> {
+    get(): Promise<TodosVm> {
         let url_ = this.baseUrl + "/api/TodoLists";
         url_ = url_.replace(/[?&]$/, "");
 
-        let options_ = <AxiosRequestConfig>{
+        let options_ = <RequestInit>{
             method: "GET",
-            url: url_,
             headers: {
                 "Accept": "application/json"
-            },
-            cancelToken
+            }
         };
 
-        return this.instance.request(options_).catch((_error: any) => {
-            if (isAxiosError(_error) && _error.response) {
-                return _error.response;
-            } else {
-                throw _error;
-            }
-        }).then((_response: AxiosResponse) => {
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
             return this.processGet(_response);
         });
     }
 
-    protected processGet(response: AxiosResponse): Promise<TodosVm> {
+    protected processGet(response: Response): Promise<TodosVm> {
         const status = response.status;
-        let _headers: any = {};
-        if (response.headers && typeof response.headers === "object") {
-            for (let k in response.headers) {
-                if (response.headers.hasOwnProperty(k)) {
-                    _headers[k] = response.headers[k];
-                }
-            }
-        }
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
-            const _responseText = response.data;
+            return response.text().then((_responseText) => {
             let result200: any = null;
-            let resultData200  = _responseText;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
             result200 = TodosVm.fromJS(resultData200);
             return result200;
+            });
         } else if (status !== 200 && status !== 204) {
-            const _responseText = response.data;
+            return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
         }
         return Promise.resolve<TodosVm>(<any>null);
     }
 
-    create(command: CreateTodoListCommand , cancelToken?: CancelToken | undefined): Promise<number> {
+    create(command: CreateTodoListCommand): Promise<number> {
         let url_ = this.baseUrl + "/api/TodoLists";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(command);
 
-        let options_ = <AxiosRequestConfig>{
-            data: content_,
+        let options_ = <RequestInit>{
+            body: content_,
             method: "POST",
-            url: url_,
             headers: {
                 "Content-Type": "application/json",
                 "Accept": "application/json"
-            },
-            cancelToken
+            }
         };
 
-        return this.instance.request(options_).catch((_error: any) => {
-            if (isAxiosError(_error) && _error.response) {
-                return _error.response;
-            } else {
-                throw _error;
-            }
-        }).then((_response: AxiosResponse) => {
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
             return this.processCreate(_response);
         });
     }
 
-    protected processCreate(response: AxiosResponse): Promise<number> {
+    protected processCreate(response: Response): Promise<number> {
         const status = response.status;
-        let _headers: any = {};
-        if (response.headers && typeof response.headers === "object") {
-            for (let k in response.headers) {
-                if (response.headers.hasOwnProperty(k)) {
-                    _headers[k] = response.headers[k];
-                }
-            }
-        }
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
-            const _responseText = response.data;
+            return response.text().then((_responseText) => {
             let result200: any = null;
-            let resultData200  = _responseText;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
             result200 = resultData200 !== undefined ? resultData200 : <any>null;
             return result200;
+            });
         } else if (status !== 200 && status !== 204) {
-            const _responseText = response.data;
+            return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
         }
         return Promise.resolve<number>(<any>null);
     }
 
-    get2(id: number , cancelToken?: CancelToken | undefined): Promise<FileResponse> {
+    get2(id: number): Promise<FileResponse> {
         let url_ = this.baseUrl + "/api/TodoLists/{id}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id));
         url_ = url_.replace(/[?&]$/, "");
 
-        let options_ = <AxiosRequestConfig>{
-            responseType: "blob",
+        let options_ = <RequestInit>{
             method: "GET",
-            url: url_,
             headers: {
                 "Accept": "application/octet-stream"
-            },
-            cancelToken
+            }
         };
 
-        return this.instance.request(options_).catch((_error: any) => {
-            if (isAxiosError(_error) && _error.response) {
-                return _error.response;
-            } else {
-                throw _error;
-            }
-        }).then((_response: AxiosResponse) => {
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
             return this.processGet2(_response);
         });
     }
 
-    protected processGet2(response: AxiosResponse): Promise<FileResponse> {
+    protected processGet2(response: Response): Promise<FileResponse> {
         const status = response.status;
-        let _headers: any = {};
-        if (response.headers && typeof response.headers === "object") {
-            for (let k in response.headers) {
-                if (response.headers.hasOwnProperty(k)) {
-                    _headers[k] = response.headers[k];
-                }
-            }
-        }
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200 || status === 206) {
-            const contentDisposition = response.headers ? response.headers["content-disposition"] : undefined;
+            const contentDisposition = response.headers ? response.headers.get("content-disposition") : undefined;
             const fileNameMatch = contentDisposition ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition) : undefined;
             const fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined;
-            return Promise.resolve({ fileName: fileName, status: status, data: response.data as Blob, headers: _headers });
+            return response.blob().then(blob => { return { fileName: fileName, data: blob, status: status, headers: _headers }; });
         } else if (status !== 200 && status !== 204) {
-            const _responseText = response.data;
+            return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
         }
         return Promise.resolve<FileResponse>(<any>null);
     }
 
-    update(id: number, command: UpdateTodoListCommand , cancelToken?: CancelToken | undefined): Promise<FileResponse> {
+    update(id: number, command: UpdateTodoListCommand): Promise<FileResponse> {
         let url_ = this.baseUrl + "/api/TodoLists/{id}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
@@ -472,97 +397,71 @@ export class TodoListsClient implements ITodoListsClient {
 
         const content_ = JSON.stringify(command);
 
-        let options_ = <AxiosRequestConfig>{
-            data: content_,
-            responseType: "blob",
+        let options_ = <RequestInit>{
+            body: content_,
             method: "PUT",
-            url: url_,
             headers: {
                 "Content-Type": "application/json",
                 "Accept": "application/octet-stream"
-            },
-            cancelToken
+            }
         };
 
-        return this.instance.request(options_).catch((_error: any) => {
-            if (isAxiosError(_error) && _error.response) {
-                return _error.response;
-            } else {
-                throw _error;
-            }
-        }).then((_response: AxiosResponse) => {
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
             return this.processUpdate(_response);
         });
     }
 
-    protected processUpdate(response: AxiosResponse): Promise<FileResponse> {
+    protected processUpdate(response: Response): Promise<FileResponse> {
         const status = response.status;
-        let _headers: any = {};
-        if (response.headers && typeof response.headers === "object") {
-            for (let k in response.headers) {
-                if (response.headers.hasOwnProperty(k)) {
-                    _headers[k] = response.headers[k];
-                }
-            }
-        }
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200 || status === 206) {
-            const contentDisposition = response.headers ? response.headers["content-disposition"] : undefined;
+            const contentDisposition = response.headers ? response.headers.get("content-disposition") : undefined;
             const fileNameMatch = contentDisposition ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition) : undefined;
             const fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined;
-            return Promise.resolve({ fileName: fileName, status: status, data: response.data as Blob, headers: _headers });
+            return response.blob().then(blob => { return { fileName: fileName, data: blob, status: status, headers: _headers }; });
         } else if (status !== 200 && status !== 204) {
-            const _responseText = response.data;
+            return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
         }
         return Promise.resolve<FileResponse>(<any>null);
     }
 
-    delete(id: number , cancelToken?: CancelToken | undefined): Promise<FileResponse> {
+    delete(id: number): Promise<FileResponse> {
         let url_ = this.baseUrl + "/api/TodoLists/{id}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id));
         url_ = url_.replace(/[?&]$/, "");
 
-        let options_ = <AxiosRequestConfig>{
-            responseType: "blob",
+        let options_ = <RequestInit>{
             method: "DELETE",
-            url: url_,
             headers: {
                 "Accept": "application/octet-stream"
-            },
-            cancelToken
+            }
         };
 
-        return this.instance.request(options_).catch((_error: any) => {
-            if (isAxiosError(_error) && _error.response) {
-                return _error.response;
-            } else {
-                throw _error;
-            }
-        }).then((_response: AxiosResponse) => {
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
             return this.processDelete(_response);
         });
     }
 
-    protected processDelete(response: AxiosResponse): Promise<FileResponse> {
+    protected processDelete(response: Response): Promise<FileResponse> {
         const status = response.status;
-        let _headers: any = {};
-        if (response.headers && typeof response.headers === "object") {
-            for (let k in response.headers) {
-                if (response.headers.hasOwnProperty(k)) {
-                    _headers[k] = response.headers[k];
-                }
-            }
-        }
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200 || status === 206) {
-            const contentDisposition = response.headers ? response.headers["content-disposition"] : undefined;
+            const contentDisposition = response.headers ? response.headers.get("content-disposition") : undefined;
             const fileNameMatch = contentDisposition ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition) : undefined;
             const fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined;
-            return Promise.resolve({ fileName: fileName, status: status, data: response.data as Blob, headers: _headers });
+            return response.blob().then(blob => { return { fileName: fileName, data: blob, status: status, headers: _headers }; });
         } else if (status !== 200 && status !== 204) {
-            const _responseText = response.data;
+            return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
         }
         return Promise.resolve<FileResponse>(<any>null);
     }
@@ -572,63 +471,53 @@ export interface IWeatherForecastClient {
     get(): Promise<WeatherForecast[]>;
 }
 
-export class WeatherForecastClient implements IWeatherForecastClient {
-    private instance: AxiosInstance;
+export class WeatherForecastClient extends ClientBase implements IWeatherForecastClient {
+    private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
     private baseUrl: string;
     protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
 
-    constructor(baseUrl?: string, instance?: AxiosInstance) {
-        this.instance = instance ? instance : axios.create();
+    constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+        super();
+        this.http = http ? http : <any>window;
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
 
-    get(  cancelToken?: CancelToken | undefined): Promise<WeatherForecast[]> {
+    get(): Promise<WeatherForecast[]> {
         let url_ = this.baseUrl + "/api/WeatherForecast";
         url_ = url_.replace(/[?&]$/, "");
 
-        let options_ = <AxiosRequestConfig>{
+        let options_ = <RequestInit>{
             method: "GET",
-            url: url_,
             headers: {
                 "Accept": "application/json"
-            },
-            cancelToken
+            }
         };
 
-        return this.instance.request(options_).catch((_error: any) => {
-            if (isAxiosError(_error) && _error.response) {
-                return _error.response;
-            } else {
-                throw _error;
-            }
-        }).then((_response: AxiosResponse) => {
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
             return this.processGet(_response);
         });
     }
 
-    protected processGet(response: AxiosResponse): Promise<WeatherForecast[]> {
+    protected processGet(response: Response): Promise<WeatherForecast[]> {
         const status = response.status;
-        let _headers: any = {};
-        if (response.headers && typeof response.headers === "object") {
-            for (let k in response.headers) {
-                if (response.headers.hasOwnProperty(k)) {
-                    _headers[k] = response.headers[k];
-                }
-            }
-        }
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
-            const _responseText = response.data;
+            return response.text().then((_responseText) => {
             let result200: any = null;
-            let resultData200  = _responseText;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
             if (Array.isArray(resultData200)) {
                 result200 = [] as any;
                 for (let item of resultData200)
                     result200!.push(WeatherForecast.fromJS(item));
             }
             return result200;
+            });
         } else if (status !== 200 && status !== 204) {
-            const _responseText = response.data;
+            return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
         }
         return Promise.resolve<WeatherForecast[]>(<any>null);
     }
@@ -1205,8 +1094,4 @@ function throwException(message: string, status: number, response: string, heade
         throw result;
     else
         throw new SwaggerException(message, status, response, headers, null);
-}
-
-function isAxiosError(obj: any | undefined): obj is AxiosError {
-    return obj && obj.isAxiosError === true;
 }
