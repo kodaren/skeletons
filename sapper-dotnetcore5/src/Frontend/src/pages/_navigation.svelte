@@ -23,8 +23,7 @@
 
 	<div>
 		{#if $user}
-			<h2>{$user.name}</h2>
-			<!-- <img src={$user.picture} alt="profile - {$user.nickname}" /> -->
+			<span>{$user.name}&nbsp;</span>
 			<a href="#signout" on:click={doSignOut}>signout</a>
 		{:else}
 			<a href="/login">login</a>
