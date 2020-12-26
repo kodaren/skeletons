@@ -71,6 +71,7 @@
       ]
    },
    "dependencies": {
-      "oidc-client": "^1.10.1"
+      "oidc-client": "^1.10.1",
+      "svelte-awesome": "^2.3.0"
    }
 }
