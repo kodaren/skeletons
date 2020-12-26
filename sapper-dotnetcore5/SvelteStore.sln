@@ -18,6 +18,27 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure", "src\Infra
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Frontend", "Frontend", "{6F5319EB-2025-45EF-9D49-818CC95CF5AF}"
 EndProject
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "Frontend", "src\Frontend\", "{46A56F4A-D633-4C4F-9FEE-950D2EFCBA76}"
+	ProjectSection(WebsiteProperties) = preProject
+		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.0"
+		Debug.AspNetCompiler.VirtualPath = "/localhost_56140"
+		Debug.AspNetCompiler.PhysicalPath = "src\Frontend\"
+		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_56140\"
+		Debug.AspNetCompiler.Updateable = "true"
+		Debug.AspNetCompiler.ForceOverwrite = "true"
+		Debug.AspNetCompiler.FixedNames = "false"
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.VirtualPath = "/localhost_56140"
+		Release.AspNetCompiler.PhysicalPath = "src\Frontend\"
+		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_56140\"
+		Release.AspNetCompiler.Updateable = "true"
+		Release.AspNetCompiler.ForceOverwrite = "true"
+		Release.AspNetCompiler.FixedNames = "false"
+		Release.AspNetCompiler.Debug = "False"
+		VWDPort = "56140"
+		SlnRelativePath = "src\Frontend\"
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -40,9 +61,16 @@ Global
 		{6C418FE3-5FEA-419A-8E14-781472AB78F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6C418FE3-5FEA-419A-8E14-781472AB78F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6C418FE3-5FEA-419A-8E14-781472AB78F5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{46A56F4A-D633-4C4F-9FEE-950D2EFCBA76}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{46A56F4A-D633-4C4F-9FEE-950D2EFCBA76}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{46A56F4A-D633-4C4F-9FEE-950D2EFCBA76}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{46A56F4A-D633-4C4F-9FEE-950D2EFCBA76}.Release|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{46A56F4A-D633-4C4F-9FEE-950D2EFCBA76} = {6F5319EB-2025-45EF-9D49-818CC95CF5AF}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B1894043-D577-4973-977B-42043DABFB1D}
