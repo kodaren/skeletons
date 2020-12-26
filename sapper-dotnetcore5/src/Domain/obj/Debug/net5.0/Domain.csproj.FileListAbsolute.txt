@@ -9,3 +9,4 @@ C:\git\skeletons\sapper-dotnetcore5\src\Domain\obj\Debug\net5.0\Domain.csproj.Co
 C:\git\skeletons\sapper-dotnetcore5\src\Domain\obj\Debug\net5.0\SvelteStore.Domain.dll
 C:\git\skeletons\sapper-dotnetcore5\src\Domain\obj\Debug\net5.0\ref\SvelteStore.Domain.dll
 C:\git\skeletons\sapper-dotnetcore5\src\Domain\obj\Debug\net5.0\SvelteStore.Domain.pdb
+C:\git\skeletons\sapper-dotnetcore5\src\Domain\obj\Debug\net5.0\Domain.csprojAssemblyReference.cache
