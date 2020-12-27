@@ -1,7 +1,7 @@
 <script>
 	import { metatags } from '@roxi/routify'
-	import Icon from 'svelte-awesome/components/Icon.svelte'
-	import * as icons from 'svelte-awesome/icons'
+	// import Icon from 'svelte-awesome/components/Icon.svelte'
+	// import * as icons from 'svelte-awesome/icons'
 	metatags.title = 'My Routify app'
 	metatags.description = 'Description coming soon...'
 </script>
@@ -18,6 +18,5 @@
 			<li>No pointless auth in SSR</li>
 		</ul>
 				
-		<!-- <code>npx @roxi/routify init --branch auth</code> -->
 	</div>
 </div>

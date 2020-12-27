@@ -51,6 +51,8 @@ export class AuthorizeService {
     somefunc()
   })
 
+  public hasUserManager = () => !!this.userManager
+  
   public async isAuthenticated(): Promise<boolean> {
     const u = await this.getUser()
     return !!u
@@ -132,7 +134,6 @@ export class AuthorizeService {
   }
 
   public async completeSignIn(url: string): Promise<IAuthenticationResult> {
-    console.log("completeSignIn", url)
     try {
       await this.ensureUserManagerInitialized()
       const user = await this.userManager.signinCallback(url)

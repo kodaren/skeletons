@@ -9,6 +9,10 @@ using SvelteStore.Infrastructure.Identity;
 using SvelteStore.Infrastructure.Persistence;
 using System;
 using System.Threading.Tasks;
+using Serilog;
+using Serilog.Events;
+using Serilog.Sinks.SystemConsole.Themes;
+using System.IO;
 
 namespace SvelteStore
 {
@@ -17,6 +21,29 @@ namespace SvelteStore
         public async static Task Main(string[] args)
         {
             var host = CreateHostBuilder(args).Build();
+            var configuration = host.Services.GetRequiredService<IConfiguration>();
+
+            var myLogFilePath = configuration.GetValue<string>("MyLogFilePath");
+
+            var logFilePath = myLogFilePath.IndexOf(":") > 0 ? myLogFilePath
+                : Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, myLogFilePath));
+
+            Log.Logger = new LoggerConfiguration()
+                .ReadFrom.Configuration(configuration)
+                //.MinimumLevel.Debug()
+                .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
+                .MinimumLevel.Override("System", LogEventLevel.Warning)
+                .MinimumLevel.Override("Microsoft.AspNetCore.Authentication", LogEventLevel.Information)
+                .Enrich.FromLogContext()
+                .WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss} {Level}] {SourceContext}{NewLine}{Message:lj}{NewLine}{Exception}{NewLine}", theme: AnsiConsoleTheme.Literate)
+                .WriteTo.File(
+                    logFilePath,
+                    rollingInterval: RollingInterval.Day,
+                    fileSizeLimitBytes: 1_000_000,
+                    rollOnFileSizeLimit: true,
+                    shared: true,
+                    flushToDiskInterval: TimeSpan.FromSeconds(1))
+                .CreateLogger();
 
             using (var scope = host.Services.CreateScope())
             {
@@ -55,9 +82,21 @@ namespace SvelteStore
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
-                }).ConfigureAppConfiguration(c =>
+                    webBuilder.UseSerilog();
+                })
+                .ConfigureAppConfiguration((hostingContext, config) =>
                 {
-                    c.AddCommandLine(args);
+                    var env = hostingContext.HostingEnvironment;
+                    var conf = config.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+                        .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true, reloadOnChange: true);
+
+                    if (env.IsDevelopment())
+                    {
+                        conf.AddJsonFile($"appsettings.local.json", optional: true, reloadOnChange: true);
+                    }
+
+                    conf.AddEnvironmentVariables();
+                    conf.AddCommandLine(args);
                 });
 
     }

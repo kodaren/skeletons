@@ -1,8 +1,8 @@
 <script>
 	import { ready } from '@roxi/routify'
-	import { authStore } from '../../oauth'
+	import { authStore } from '../../auth-store'
 	import Login from '../login/index.svelte'
-	const { user, authenticated, loading } = authStore
+	const { user, loading } = authStore
 
 	/**
 	 * since SSR normally won't render till all components have been loaded

@@ -63,17 +63,7 @@ namespace SvelteStore
                                           .AllowAnyMethod();
                     }
                 );
-                //options.AddPolicy(name: IdentityClientOrigins,
-                //                  builder =>
-                //                  {
-                //                      builder.WithOrigins("http://localhost:3000")
-                //                      .AllowAnyHeader()
-                //                      .AllowAnyMethod()
-                //                      ;
-                //                  });
             });
-
-            
 
             services.AddControllersWithViews(options =>
                 options.Filters.Add<ApiExceptionFilterAttribute>())
@@ -136,15 +126,10 @@ namespace SvelteStore
 
             app.UseIdentityServer();
 
-            //app.AddInMemoryClients(Configuration.GetSection("IdentityServer4:Clients"));
-
             app.UseAuthorization();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapDefaultControllerRoute();
-                //endpoints.MapControllerRoute(
-                //    name: "default",
-                //    pattern: "{controller}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
             });
 

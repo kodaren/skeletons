@@ -1,5 +1,5 @@
 <script>
-	import { authStore } from '../../oauth'
+	import { authStore } from '../../auth-store'
 	import { redirect } from '@roxi/routify'
 	const { user } = authStore
 

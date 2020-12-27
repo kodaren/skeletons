@@ -1,11 +1,15 @@
 <script lang="ts">
-	import { authStore } from '../../oauth'
+	import { authStore} from '../../auth-store'
+	import { url } from "@roxi/routify";
+
+	const {loginService} = authStore
 
 	async function doSignin() {
-		await authStore.signin()
+		await loginService.login('/')
 	}
 </script>
 
+<h3>{$url()}</h3>
 <div class="center-all">
 	<div class="card">
 		<h3>We're super lazy about our login form</h3>
