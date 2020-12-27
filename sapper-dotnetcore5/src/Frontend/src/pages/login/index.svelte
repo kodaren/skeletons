@@ -9,7 +9,6 @@
 	}
 </script>
 
-<h3>{$url()}</h3>
 <div class="center-all">
 	<div class="card">
 		<h3>We're super lazy about our login form</h3>

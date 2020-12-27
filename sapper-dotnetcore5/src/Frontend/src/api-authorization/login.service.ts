@@ -65,12 +65,14 @@ export class LoginService {
 
     public async processLoginCallback(): Promise<void> {
         const url = window.location.href;
+        console.log("processLoginCallback", url)
         const result = await this.authorizeService.completeSignIn(url);
         switch (result.status) {
             case AuthenticationResultStatus.Redirect:
                 // There should not be any redirects as completeSignIn never redirects.
                 throw new Error("Should not redirect.");
             case AuthenticationResultStatus.Success:
+                console.log("processLoginCallback success")
                 this.navigateToReturnUrl(this.getReturnUrl(result.state));
                 break;
             case AuthenticationResultStatus.Fail:

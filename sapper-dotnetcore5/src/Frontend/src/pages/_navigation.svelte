@@ -1,6 +1,7 @@
 <script>
-	import { authStore } from '../auth-store'
-	const { user } = authStore
+import { authStore } from '../auth-store'
+
+const { user, logoutService } = authStore
 	const links = [
 		['/index', 'home'],
 		['/about', 'about'],
@@ -9,8 +10,9 @@
 
 	function doSignOut()
 	{
-		authStore.signout()
+		logoutService.logout("/")
 	}
+
 </script>
 
 <nav>
