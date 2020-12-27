@@ -1,31 +1,29 @@
 <script lang="ts">
-    import { authStore } from "../../api-authorization/auth-store";
-
-    import { TodoItemDto, TodoListsClient } from "../../app/web-api-client";
-
+    import { url } from "@roxi/routify";
+    import { TodoListDto, TodoListsClient } from "../../app/web-api-client";
+    
     const client = new TodoListsClient("https://localhost:44300");
 
-    async function getTodoItems(): Promise<TodoItemDto[]> {
-        client.token = await authStore.getAccessToken();
+    async function getTodoLists(): Promise<TodoListDto[]> {
         const { lists } = await client.get();
         return lists;
     }
 
-    authStore.getAccessToken().then((token: string) => (client.token = token));
 </script>
 
 <div class="center-all">
-    <h1>ADMIN</h1>
+    <h1>Todo lists</h1>
 
-    {#await getTodoItems()}
-        Getting todo list
-    {:then items}
-        <h2>Items</h2>
+    {#await getTodoLists()}
+        Getting todo lists
+    {:then todoLists}
         <ul>
-            {#each items as item,i}
-            <li>{i}: {item.title}</li>
-                 <!-- content here -->
+            {#each todoLists as todoItem}
+                <li>
+                    <a href={$url('./:listId', { listId: todoItem.id })}>{todoItem.title}</a>
+                </li>
             {/each}
         </ul>
+
     {/await}
 </div>

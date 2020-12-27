@@ -11,7 +11,7 @@
 <div class="center-all">
 	<div class="card">
 		<h3>We're super lazy about our login form</h3>
-		<p>So we leave it to auth0</p>
+		<p>So we leave it to Identity Server</p>
 		<button class="button" on:click={doSignin}>sign in</button>
 	</div>
 </div>

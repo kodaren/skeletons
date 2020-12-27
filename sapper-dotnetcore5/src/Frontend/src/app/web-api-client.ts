@@ -7,24 +7,29 @@
 //----------------------
 // ReSharper disable InconsistentNaming
 
+import { authStore } from '../api-authorization/auth-store'
 export class ClientBase {
     /**
-     * authorization token value
+     * request should use bearer authentication
      */
-    public token: string
+    public authenticateRequest: boolean
 
     constructor() {
-        this.token = null
+        this.authenticateRequest = true
     }
 
     protected transformOptions(options: any) {
 
-        if (this.token) {
-            options.headers["Authorization"] = "bearer " + this.token
-        } else {
-            console.warn("Authorization token have not been set please authorize first.");
+        if (this.authenticateRequest) {
+            return authorizeService.getAccessToken()
+                .then(token => {
+                    options.headers["Authorization"] = "bearer " + token
+                    return new Promise(resolve => resolve(options))
+                })
+                .catch(err => console.error("Could not get accesstoken: " + err))
         }
         return Promise.resolve(options);
+
     }
 }
 
@@ -1095,3 +1100,5 @@ function throwException(message: string, status: number, response: string, heade
     else
         throw new SwaggerException(message, status, response, headers, null);
 }
+
+const { authorizeService } = authStore
