@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { authStore } from "../../auth-store";
+    import { authStore } from "../../api-authorization/auth-store";
 
     import { TodoItemDto, TodoListsClient } from "../../app/web-api-client";
 

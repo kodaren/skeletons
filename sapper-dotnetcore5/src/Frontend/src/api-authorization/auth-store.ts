@@ -1,7 +1,7 @@
 import { writable } from 'svelte/store'
-import { AuthorizeService } from './api-authorization/authorize.service'
-import { LoginService } from './api-authorization/login.service'
-import { LogoutService } from './api-authorization/logout.service'
+import { AuthorizeService } from './authorize.service'
+import { LoginService } from './login.service'
+import { LogoutService } from './logout.service'
 
 export const authStore = createAuthStore()
 

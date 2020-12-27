@@ -1,6 +1,6 @@
 <script>
 	import { ready } from '@roxi/routify'
-	import { authStore } from '../../auth-store'
+	import { authStore } from '../../api-authorization/auth-store'
 	import Login from '../login/index.svelte'
 	const { user, loading } = authStore
 

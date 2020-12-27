@@ -2,7 +2,7 @@
 	import { goto } from "@roxi/routify";
 	import { onMount } from "svelte";
 
-	import {authStore } from '../../auth-store'
+	import {authStore } from '../../api-authorization/auth-store'
 
 	const {message, loginService, logoutService, redirectToPageEvent} = authStore
 	let msg: string

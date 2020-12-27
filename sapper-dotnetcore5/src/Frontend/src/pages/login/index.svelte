@@ -1,6 +1,5 @@
 <script lang="ts">
-	import { authStore} from '../../auth-store'
-	import { url } from "@roxi/routify";
+	import { authStore} from '../../api-authorization/auth-store'
 
 	const {loginService} = authStore
 
