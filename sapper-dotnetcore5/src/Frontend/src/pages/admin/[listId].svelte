@@ -1,11 +1,16 @@
 <script lang="ts">
+    import { ready } from "@roxi/routify";
     import {
         PaginatedListOfTodoItemDto,
         TodoItemsClient,
     } from "../../app/web-api-client";
 
     export let listId: number
+
+	$ready();
+
     const client = new TodoItemsClient("https://localhost:44300");
+
 
     async function getTodoItems(): Promise<PaginatedListOfTodoItemDto> {
         const list: PaginatedListOfTodoItemDto = await client.getTodoItemsWithPagination(

@@ -1,34 +1,32 @@
 <script>
-import { authStore } from '../api-authorization/auth-store'
+	import { authStore } from "../api-authorization/auth-store";
 
-const { user, logoutService } = authStore
+	const { user, logoutService, loginService } = authStore;
 	const links = [
-		['/index', 'home'],
-		['/about', 'about'],
-		['/admin', 'admin'],
-	]
+		["/index", "home"],
+		["/about", "about"],
+		["/admin", "admin"],
+	];
 
-	function doSignOut()
-	{
-		logoutService.logout("/")
+	function doSignIn() {
+		loginService.login();
 	}
 
+	function doSignOut() {
+		logoutService.logout("/");
+	}
 </script>
 
 <nav>
 	<div />
 	<div>
-		{#each links as [path, name]}
-			<a href={path}>{name}</a>
-		{/each}
+		{#each links as [path, name]}<a href={path}>{name}</a>{/each}
 	</div>
 
 	<div>
 		{#if $user}
 			<span>{$user.name}&nbsp;</span>
-			<a href="#signout" on:click={doSignOut}>signout</a>
-		{:else}
-			<a href="/login">login</a>
-		{/if}
+			<a href="#logout" on:click={doSignOut}>Sign out</a>
+		{:else}<a href="#login" on:click={doSignIn}>Sign in</a>{/if}
 	</div>
 </nav>

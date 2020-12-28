@@ -1,7 +1,9 @@
 <script lang="ts">
-    import { url } from "@roxi/routify";
+    import { url, ready } from "@roxi/routify";
     import { TodoListDto, TodoListsClient } from "../../app/web-api-client";
-    
+
+    $ready()
+
     const client = new TodoListsClient("https://localhost:44300");
 
     async function getTodoLists(): Promise<TodoListDto[]> {

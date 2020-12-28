@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { goto } from "@roxi/routify";
+	import { goto,  ready } from "@roxi/routify";
 	import { onMount } from "svelte";
 
 	import {authStore } from '../../api-authorization/auth-store'
@@ -7,6 +7,8 @@
 	const {message, loginService, logoutService, redirectToPageEvent} = authStore
 	let msg: string
 	message.subscribe(m => msg = m)
+
+	$ready();
 
 	onMount(async () => {
 		redirectToPageEvent.subscribe((returnUrl) => {
@@ -27,8 +29,6 @@
 
 	});
 </script>
-
-<!-- <h2>Login fallback {window.location.href}</h2> -->
 
 {#if msg}
 	<h3>{msg}</h3>

@@ -24,15 +24,11 @@ function createAuthStore() {
                     user.set(u)
                     authenticated.set(true)
                 }
+                loading.set(false)
             })
-        loading.set(false)
     }
 
-    async function getAccessToken(): Promise<string> {
-        return authorizeService.getAccessToken()
-    }
-
-    return { loading, authenticated, user, message, redirectToPageEvent, init, getAccessToken, authorizeService, loginService, logoutService }
+    return { loading, authenticated, user, message, redirectToPageEvent, init, authorizeService, loginService, logoutService }
 
 }
 

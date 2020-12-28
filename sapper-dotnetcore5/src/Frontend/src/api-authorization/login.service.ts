@@ -15,7 +15,9 @@ export class LoginService {
     public async handleAction(action: string) {
         switch (action) {
             case LoginActions.Login:
-                await this.login(this.getReturnUrl());
+                const returnUrl = this.getReturnUrl()
+                console.log("handleAction", returnUrl)
+                await this.login(returnUrl);
                 break;
             case LoginActions.LoginCallback:
                 await this.processLoginCallback();
@@ -40,9 +42,11 @@ export class LoginService {
         throw new Error("Method not implemented.");
     }
 
-    public async login(returnUrl: string): Promise<void> {
+    public async login(returnUrl?: string): Promise<void> {
+        returnUrl = returnUrl || window.location.pathname
         console.log("in login")
         const state: INavigationState = { returnUrl };
+        console.log("login state", state)
         const result = await this.authorizeService.signIn(state);
         this.message.set(undefined);
 
@@ -50,6 +54,7 @@ export class LoginService {
             case AuthenticationResultStatus.Redirect:
                 break;
             case AuthenticationResultStatus.Success:
+                console.log("login success", returnUrl)
                 this.navigateToReturnUrl(returnUrl);
                 break;
             case AuthenticationResultStatus.Fail:
@@ -72,8 +77,9 @@ export class LoginService {
                 // There should not be any redirects as completeSignIn never redirects.
                 throw new Error("Should not redirect.");
             case AuthenticationResultStatus.Success:
-                console.log("processLoginCallback success")
-                this.navigateToReturnUrl(this.getReturnUrl(result.state));
+                const returnUrl = this.getReturnUrl(result.state);
+                console.log("processLoginCallback success", returnUrl)
+                this.navigateToReturnUrl(returnUrl);
                 break;
             case AuthenticationResultStatus.Fail:
                 this.message.set(result.message);
