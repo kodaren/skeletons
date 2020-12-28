@@ -206,13 +206,12 @@ export class AuthorizeService {
     }
 
     const settings: any = await response.json()
-    console.table("Loaded OIDC settings", settings)
-
     this.userManager = new UserManager(settings)
     this.userManager.events.addUserSignedOut(async () => {
       await this.userManager.removeUser()
       this.userSubject.set(null)
     })
+    
   }
 
 

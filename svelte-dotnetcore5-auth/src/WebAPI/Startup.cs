@@ -20,18 +20,18 @@ namespace SvelteStore
 {
     public class Startup
     {
-        private readonly ILogger<Startup> Logger;
+        //private readonly ILogger<Startup> Logger;
         public Startup(IConfiguration configuration)
         {
-            var loggerFactory = LoggerFactory.Create(builder =>
-            {
-                builder.AddFilter("Microsoft", LogLevel.Warning)
-                       .AddFilter("System", LogLevel.Warning)
-                       .AddFilter("SvelteStore.Startup", LogLevel.Debug)
-                       .AddConsole();
-            });
+            //var loggerFactory = LoggerFactory.Create(builder =>
+            //{
+            //    builder.AddFilter("Microsoft", LogLevel.Warning)
+            //           .AddFilter("System", LogLevel.Warning)
+            //           .AddFilter("SvelteStore.Startup", LogLevel.Debug)
+            //           .AddConsole();
+            //});
 
-            Logger = loggerFactory.CreateLogger<Startup>();
+            //Logger = loggerFactory.CreateLogger<Startup>();
             Configuration = configuration;
 
             
