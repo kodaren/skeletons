@@ -1,9 +1,11 @@
 <script>
 	import { authStore } from "../api-authorization/auth-store";
+	import Icon from 'svelte-awesome';
+  	import { beer, home } from 'svelte-awesome/icons';
 
 	const { user, logoutService, loginService } = authStore;
 	const links = [
-		["/index", "home"],
+		["/index", "home", home],
 		["/about", "about"],
 		["/admin", "admin"],
 	];
@@ -20,7 +22,14 @@
 <nav>
 	<div />
 	<div>
-		{#each links as [path, name]}<a href={path}>{name}</a>{/each}
+		{#each links as [path, name, icon]}
+		<a href={path}>
+		{#if icon}
+			<Icon data={icon} scale="2"/>
+		{/if}
+			{name}
+		</a>
+		{/each}
 	</div>
 
 	<div>

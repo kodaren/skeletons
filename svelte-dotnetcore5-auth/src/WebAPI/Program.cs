@@ -30,7 +30,6 @@ namespace SvelteStore
 
             Log.Logger = new LoggerConfiguration()
                 .ReadFrom.Configuration(configuration)
-                //.MinimumLevel.Debug()
                 .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
                 .MinimumLevel.Override("System", LogEventLevel.Warning)
                 .MinimumLevel.Override("Microsoft.AspNetCore.Authentication", LogEventLevel.Information)
@@ -42,7 +41,7 @@ namespace SvelteStore
                     fileSizeLimitBytes: 1_000_000,
                     rollOnFileSizeLimit: true,
                     shared: true,
-                    flushToDiskInterval: TimeSpan.FromSeconds(1))
+                    flushToDiskInterval: TimeSpan.FromSeconds(5))
                 .CreateLogger();
 
             using (var scope = host.Services.CreateScope())

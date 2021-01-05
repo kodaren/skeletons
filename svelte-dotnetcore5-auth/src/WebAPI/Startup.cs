@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using NSwag;
 using NSwag.Generation.Processors.Security;
 using SvelteStore.Application;
@@ -20,21 +19,9 @@ namespace SvelteStore
 {
     public class Startup
     {
-        //private readonly ILogger<Startup> Logger;
         public Startup(IConfiguration configuration)
         {
-            //var loggerFactory = LoggerFactory.Create(builder =>
-            //{
-            //    builder.AddFilter("Microsoft", LogLevel.Warning)
-            //           .AddFilter("System", LogLevel.Warning)
-            //           .AddFilter("SvelteStore.Startup", LogLevel.Debug)
-            //           .AddConsole();
-            //});
-
-            //Logger = loggerFactory.CreateLogger<Startup>();
             Configuration = configuration;
-
-            
         }
 
         public IConfiguration Configuration { get; }

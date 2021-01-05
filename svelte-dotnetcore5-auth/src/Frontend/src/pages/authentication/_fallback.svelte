@@ -1,35 +1,30 @@
 <script lang="ts">
-	import { goto,  ready } from "@roxi/routify";
+	import { goto, ready } from "@roxi/routify";
 	import { onMount } from "svelte";
+	import { codeFlowClient } from "../../oidc/oidc-code-flow-client";
+import type { SigninResponse } from "../../oidc/signin-response";
 
-	import {authStore } from '../../api-authorization/auth-store'
+	let action = "none"
+	let resp: SigninResponse
 
-	const {message, loginService, logoutService, redirectToPageEvent} = authStore
-	let msg: string
-	message.subscribe(m => msg = m)
-
-	$ready();
+	$ready()
 
 	onMount(async () => {
-		redirectToPageEvent.subscribe((returnUrl) => {
-			if (returnUrl) $goto(returnUrl);
-		});
-
-		const action = window.location.pathname.split("/")[2];
-        console.log("Action", action);
-
-		if (action.indexOf("login") >= 0)
-		{
-			await loginService.handleAction(action);
+		action = window.location.pathname.split("/")[2];
+		console.log("Action", action);
+		switch(action) {
+			case "login-callback":
+				resp = await codeFlowClient.processSigninResponse()
+				break;
 		}
-		else if (action.indexOf("logout") >= 0) {
-			await logoutService.handleAction(action);
-		}
-
-
 	});
 </script>
 
-{#if msg}
-	<h3>{msg}</h3>
+{#if action}
+	<h3>{action}</h3>
 {/if}
+
+{#if resp}
+	<h3>{resp.access_token}</h3>
+{/if}
+
