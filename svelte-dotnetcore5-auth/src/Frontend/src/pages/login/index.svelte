@@ -1,14 +1,15 @@
 <script lang="ts">
-
-	import { authStore } from "../../api-authorization/auth-store";
-
-	const { loginService } = authStore;
-
-	console.log("loc", window.location.href);
+	
+	import { codeFlowClient } from "../../oidc/oidc-code-flow-client";
 
 	async function doSignin() {
-		await loginService.login();
+		const profile = await codeFlowClient.getUser();
+		if (!profile) {
+			await codeFlowClient.authorizeRequest(window.location.origin + "/");
+		}
 	}
+
+
 </script>
 
 <p>&nbsp;</p>

@@ -4,6 +4,7 @@ import { SigninResponse } from './signin-response'
 
 export interface IDispatchMessage<T> {
     dispatch(message: T): any
+    converter(): any
 }
 
 export interface IUser {
@@ -17,6 +18,42 @@ export interface IIdServerUris {
     UserInfo: string
 }
 
+export class IdToken {
+    id_token: string
+    access_token: string
+    expires_at: number
+    scope: string
+
+    get expires_in() {
+        if (this.expires_at) {
+            let now = Math.round(Date.now() / 1000)
+            return this.expires_at - now
+        }
+        return undefined;
+    }
+    set expires_in(value: any){
+        let expires_in = parseInt(value);
+        if (typeof expires_in === 'number' && expires_in > 0) {
+            let now = Math.round(Date.now() / 1000);
+            this.expires_at = now + expires_in;
+        }
+    }
+
+    get expired() {
+        let expires_in = this.expires_in;
+        if (expires_in !== undefined) {
+            return expires_in <= 0;
+        }
+        return undefined;
+    }
+
+    get scopes() {
+        return (this.scope || "").split(" ");
+    }
+
+}
+
+
 export class OidcCodeFlowClient {
 
     public message: IDispatchMessage<string>
@@ -24,14 +61,21 @@ export class OidcCodeFlowClient {
     public userSubject: IDispatchMessage<IUser | null>
 
     private idServerUris: IIdServerUris
-    private token: any
-    private accessToken: string
+
     private settings: OidcClientSettings;
     private options: OidcClientSettings = {
         authority: window.location.origin,
         loadUserInfo: true
     }
     private signinResponse: SigninResponse
+
+    public user: IUser
+
+    public get isAuthenticated(): boolean {
+      
+        return !!this.user
+    }
+
 
     public init(options: OidcClientSettings,  
         message: IDispatchMessage<string>, 
@@ -60,22 +104,10 @@ export class OidcCodeFlowClient {
         }
     }
 
-    public async signIn(returnUrl: string) {
-
-    }
-
-    //constructor(private foo ? foo : string="foo", private bar ? bar : string="bar") {}
-    public async isAuthenticated(): Promise<boolean> {
-        const u = await this.getUser()
-        return !!u
-    }
-
     public async getUser(): Promise<IUser> {
 
         const accessToken = await this.getAccessToken()
-        console.log("accesstoken", accessToken)
         if (!accessToken) {
-            console.log("token not set")
             return null;
         }
 
@@ -88,12 +120,12 @@ export class OidcCodeFlowClient {
         })
         if (resp.ok) {
             const user = await resp.json()
+            this.user = user as IUser
             this.userSubject.dispatch(user as IUser)
             console.log("getUser", user)
             return user;
         }
         throw new Error("Could not get user info:\n" + resp.statusText)
-
 
     }
 
@@ -109,10 +141,8 @@ export class OidcCodeFlowClient {
             throw new Error(`Could not load settings for '${this.options.client_id}'`)
         }
 
-        const settings: any = await response.json()
+        return await response.json()
 
-
-        return settings;
     }
 
     public async authorizeRequest(returnUrl: string): Promise<void> {
@@ -125,6 +155,7 @@ export class OidcCodeFlowClient {
             code_verifier: true, skipUserInfo: false
         })
 
+        await webStorage.clear()
         await webStorage.set(signInState.id, signInState.toStorageString())
 
         const code_challenge = await signInState.getCodeChallenge()
@@ -148,9 +179,13 @@ export class OidcCodeFlowClient {
     }
     public async getSigninState(): Promise<SigninState> {
         const state = await webStorage.get(this.signinResponse && this.signinResponse.state)
+        if (!state) {
+            return null;
+        }
         return SigninState.fromStorageString(state)
-    }
 
+    }
+    
     public async processSigninResponse(): Promise<SigninResponse> {
         const useQuery = true
         const delimiter = useQuery ? "?" : "#"
@@ -159,6 +194,7 @@ export class OidcCodeFlowClient {
         console.log("processSigninResponse token", this.signinResponse)
 
         const user = await this.getUser()
+        console.log("processSigninResponse user", user)
         this.message.dispatch(user ? "Userinfo has been loaded": "Failed to load user info")
 
         const state = await this.getSigninState()
@@ -167,32 +203,41 @@ export class OidcCodeFlowClient {
         return Promise.resolve(this.signinResponse)
     }
 
+
     private async addTokenValues(): Promise<void> {
-        this.token = await this.getToken()
-        const { id_token, access_token, expires_in } = this.token
-        //const now = new Date()
-        this.signinResponse.id_token = id_token
-        this.signinResponse.access_token = access_token
-        // this.signinResponse.expires_at = new Date(now.getTime() + 1000 * expires_in)
-        this.signinResponse.expires_in = expires_in
+        const token = await this.getTokenFromEndpoint()
+        await webStorage.set("token", JSON.stringify(token))
+        
+        this.signinResponse.id_token = token.id_token
+        this.signinResponse.access_token = token.access_token
+        this.signinResponse.expires_in = token.expires_in
     }
 
-    public async getAccessToken(): Promise<string> {
+    private async getToken(): Promise<IdToken> {
+        let token: IdToken
         let tokenStr = await webStorage.get("token")
-        let token: any
         if (tokenStr) {
             token = JSON.parse(tokenStr)
         }
-        else {
-            token = await this.getToken()
-            await webStorage.set("token", JSON.stringify(token))
+        
+        if (token && token.expired) // Check refresh token whem x % is left
+        {
+            console.log("TODO: Getting refresh token")
+            // Try and get refresh token
         }
-        this.token = token
-        this.accessToken = token && token.access_token
-        return this.accessToken
+
+        return token
+
     }
 
-    public async getToken(): Promise<any> {
+    public async getAccessToken(): Promise<string> {
+
+        let token = await this.getToken()
+        return token && token.access_token
+
+    }
+
+    public async getTokenFromEndpoint(): Promise<IdToken> {
         const state = await this.getSigninState()
         if (!state)
         {

@@ -1,5 +1,4 @@
-import { authStore } from '../api-authorization/auth-store'
-const { authorizeService } = authStore
+import { codeFlowClient } from "../oidc/oidc-code-flow-client"
 
 export class ClientBase {
     /**
@@ -14,7 +13,7 @@ export class ClientBase {
     protected transformOptions(options: any) {
 
         if (this.authenticateRequest) {
-            return authorizeService.getAccessToken()
+            return codeFlowClient.getAccessToken()
                 .then(token => {
                     options.headers["Authorization"] = "bearer " + token
                     return new Promise(resolve => resolve(options))

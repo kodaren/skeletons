@@ -6,6 +6,7 @@
   import { DispatchMessage } from "./common/dispatch-message";
 
   function initAuth() {
+    
     codeFlowClient.init(
       {
         client_id: AppSettings.ClientId,
@@ -13,7 +14,7 @@
       },
       new DispatchMessage<string>(),
       new DispatchMessage<string>(),
-      new DispatchMessage<IUser>()
+      new DispatchMessage<IUser>({ name: 'not set'})
     );
   }
   // we need to queue our init till after Routify has been initialized

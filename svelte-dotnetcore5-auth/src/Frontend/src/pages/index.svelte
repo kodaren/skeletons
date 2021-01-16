@@ -6,10 +6,8 @@
 
 	import { codeFlowClient, IUser } from "../oidc/oidc-code-flow-client";
 	import { onMount } from "svelte";
-import type { Writable } from "svelte/store";
-import type { DispatchMessage } from "../common/dispatch-message";
 
-	let user;
+	let user: string;
 
 	onMount(async () => {
 		const profile = await codeFlowClient.getUser();
@@ -17,8 +15,8 @@ import type { DispatchMessage } from "../common/dispatch-message";
 			await codeFlowClient.authorizeRequest(window.location.origin + "/");
 		}
 
-		const userSubject = (codeFlowClient.userSubject as DispatchMessage<IUser>).store
-		userSubject.subscribe((u) => (user = u && u.name));
+		const userSubject = codeFlowClient.userSubject.converter()
+		userSubject.subscribe((u: IUser) => (user = u && u.name));
 	});
 
 	metatags.title = "My Routify app";
