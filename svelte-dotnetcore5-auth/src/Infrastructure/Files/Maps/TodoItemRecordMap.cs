@@ -9,7 +9,7 @@ namespace SvelteStore.Infrastructure.Files.Maps
         public TodoItemRecordMap()
         {
             AutoMap(CultureInfo.InvariantCulture);
-            Map(m => m.Done).ConvertUsing(c => c.Done ? "Yes" : "No");
+            Map(m => m.Done).Convert(c => c.Value.Done ? "Yes" : "No");
         }
     }
 }
