@@ -3,10 +3,11 @@
 	import { codeFlowClient } from "../../oidc/oidc-code-flow-client";
 
 	async function doSignin() {
-		const profile = await codeFlowClient.getUser();
-		if (!profile) {
-			await codeFlowClient.authorizeRequest(window.location.origin + "/");
-		}
+		await codeFlowClient.authorizeRequest();
+		// const profile = await codeFlowClient.getUser();
+		// if (!profile) {
+		// 	await codeFlowClient.authorizeRequest(window.location.origin + "/");
+		// }
 	}
 
 

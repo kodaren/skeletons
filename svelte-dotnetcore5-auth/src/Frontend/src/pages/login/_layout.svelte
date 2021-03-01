@@ -1,15 +1,20 @@
-<script>
-	import { authStore } from "../../api-authorization/auth-store";
+<script lang="ts">
 	import { redirect } from "@roxi/routify";
-	const { user } = authStore;
+	//import { onMount } from "svelte";
+	import { codeFlowClient } from "../../oidc/oidc-code-flow-client";
+
+	// let user: any;
+	// onMount(() => {
+	// 	codeFlowClient.userSubject.subscribe((u: any) => user = u)
+	// })
 
 	/**
 	 *  We don't want the login page to visible to logged in user, so we redirect them
 	 * Computed property doesn't work as it will flood events
 	 **/
-	if ($user) $redirect("/");
+	if (codeFlowClient.user) $redirect("/");
 </script>
 
-{#if !$user}
+{#if !codeFlowClient.user}
 	<slot />
 {/if}

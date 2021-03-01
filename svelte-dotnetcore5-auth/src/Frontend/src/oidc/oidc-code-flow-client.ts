@@ -2,6 +2,8 @@ import { SigninState } from './signin-state'
 import { webStorage } from './helpers/web-storage'
 import { SigninResponse } from './signin-response'
 
+const DefaultLoginRedirectPath = "/"
+
 export interface IDispatchMessage<T> {
     dispatch(message: T): any
     converter(): any
@@ -56,9 +58,9 @@ export class IdToken {
 
 export class OidcCodeFlowClient {
 
-    public message: IDispatchMessage<string>
-    public redirectToPageEvent: IDispatchMessage<string>
-    public userSubject: IDispatchMessage<IUser | null>
+    private _message: IDispatchMessage<string>
+    private _redirectToPageEvent: IDispatchMessage<string>
+    private _userSubject: IDispatchMessage<IUser | null>
 
     private idServerUris: IIdServerUris
 
@@ -70,6 +72,20 @@ export class OidcCodeFlowClient {
     private signinResponse: SigninResponse
 
     public user: IUser
+
+    public get message() {
+        console.log("message here")
+        return this._message.converter()
+    }
+
+    public get userSubject() {
+        console.log("userSubject here")
+        return this._userSubject.converter()
+    }
+    public get redirectToPageEvent() {
+        console.log("redirectToPageEvent here")
+        return this._redirectToPageEvent.converter()
+    }
 
     public get isAuthenticated(): boolean {
       
@@ -92,9 +108,9 @@ export class OidcCodeFlowClient {
 
         this.options = { ...options }
         console.log("options", options)
-        this.message = message
-        this.redirectToPageEvent = redirectToPageEvent
-        this.userSubject = userSubject
+        this._message = message
+        this._redirectToPageEvent = redirectToPageEvent
+        this._userSubject = userSubject
         this.idServerUris = {
             AccessToken: `${options.authority}/connect/token`,
             AuthorizeRequest: `${options.authority}/connect/authorize`,
@@ -121,7 +137,7 @@ export class OidcCodeFlowClient {
         if (resp.ok) {
             const user = await resp.json()
             this.user = user as IUser
-            this.userSubject.dispatch(user as IUser)
+            this._userSubject.dispatch(user as IUser)
             console.log("getUser", user)
             return user;
         }
@@ -145,7 +161,10 @@ export class OidcCodeFlowClient {
 
     }
 
-    public async authorizeRequest(returnUrl: string): Promise<void> {
+    public async authorizeRequest(returnUrl?: string): Promise<void> {
+
+        returnUrl = returnUrl || window.location.pathname
+
         const settings = await this.getClientSettings()
 
         const signInState = new SigninState({
@@ -195,19 +214,47 @@ export class OidcCodeFlowClient {
 
         const user = await this.getUser()
         console.log("processSigninResponse user", user)
-        this.message.dispatch(user ? "Userinfo has been loaded": "Failed to load user info")
+        this._message.dispatch(user ? "Userinfo has been loaded": "Failed to load user info")
 
         const state = await this.getSigninState()
-        this.redirectToPageEvent.dispatch(state.return_uri)
+        this.navigateToReturnUrl(state.return_uri)
 
         return Promise.resolve(this.signinResponse)
     }
 
+    public async handleAction() {
+        const action = window.location.pathname.split("/")[2];
+		console.log("Action", action);
+        switch (action) {
+            case "login-callback":
+                this._message.dispatch("Processing login callback");
+                await this.processSigninResponse();
+                break;
+            case "login-failed":
+                this._message.dispatch("Failed to login");
+                break;
+            // case LoginActions.Profile:
+            //     this.redirectToProfile();
+            //     break;
+            // case LoginActions.Register:
+            //     this.redirectToRegister();
+            //     break;
+            default:
+                throw new Error(`Invalid action '${action}'`);
+        }
+    }
+
+    public navigateToReturnUrl(returnUrl: string) {
+        // It's important that we do a replace here so that we remove the callback uri with the
+        // fragment containing the tokens from the browser history.
+        const path = returnUrl.replace(window.location.origin, "");
+        this._redirectToPageEvent.dispatch(path)
+    }
 
     private async addTokenValues(): Promise<void> {
         const token = await this.getTokenFromEndpoint()
         await webStorage.set("token", JSON.stringify(token))
-        
+        this._message.dispatch(`access_token: ${token.access_token}`)        
         this.signinResponse.id_token = token.id_token
         this.signinResponse.access_token = token.access_token
         this.signinResponse.expires_in = token.expires_in
@@ -241,10 +288,9 @@ export class OidcCodeFlowClient {
         const state = await this.getSigninState()
         if (!state)
         {
-            return null
+            throw new Error('Invalid signin state')
         }
-        //console.log("code verifier", state.code_verifier.length)
-        console.log("getAccessToken", state)
+
         const formData = `client_id=${this.options.client_id}`
             + `&grant_type=authorization_code`
             + `&redirect_uri=${encodeURIComponent(state.redirect_uri)}`

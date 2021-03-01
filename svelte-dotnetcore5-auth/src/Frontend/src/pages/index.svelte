@@ -12,11 +12,10 @@
 	onMount(async () => {
 		const profile = await codeFlowClient.getUser();
 		if (!profile) {
-			await codeFlowClient.authorizeRequest(window.location.origin + "/");
+			await codeFlowClient.authorizeRequest();
 		}
 
-		const userSubject = codeFlowClient.userSubject.converter()
-		userSubject.subscribe((u: IUser) => (user = u && u.name));
+		codeFlowClient.userSubject.subscribe((u: IUser) => (user = u && u.name));
 	});
 
 	metatags.title = "My Routify app";

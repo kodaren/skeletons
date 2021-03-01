@@ -1,34 +1,39 @@
-<script>
-	import { authStore } from "../api-authorization/auth-store";
-	import Icon from 'svelte-awesome';
-  	import { beer, home } from 'svelte-awesome/icons';
+<script lang="ts">
+import { onMount } from "svelte";
 
-	const { user, logoutService, loginService } = authStore;
+	import Icon from "svelte-awesome";
+	import { beer, home } from "svelte-awesome/icons";
+	import { codeFlowClient } from "../oidc/oidc-code-flow-client";
+
+	let user: any;
+	onMount(() => {
+		//codeFlowClient.userSubject.subscribe((u: any) => user = u)
+	})
+
 	const links = [
 		["/index", "home", home],
 		["/about", "about"],
 		["/admin", "admin"],
 	];
 
-	function doSignIn() {
-		loginService.login();
+	async function doSignIn() {
+		await codeFlowClient.authorizeRequest();
 	}
 
-	function doSignOut() {
-		logoutService.logout("/");
-	}
+	function doSignOut() {}
+
 </script>
 
 <nav>
 	<div />
 	<div>
 		{#each links as [path, name, icon]}
-		<a href={path}>
-		{#if icon}
-			<Icon data={icon} scale="2"/>
-		{/if}
-			{name}
-		</a>
+			<a href={path}>
+				{#if icon}
+					<Icon data={icon} scale="2" />
+				{/if}
+				{name}
+			</a>
 		{/each}
 	</div>
 
