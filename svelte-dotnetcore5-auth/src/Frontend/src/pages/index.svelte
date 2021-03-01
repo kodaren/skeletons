@@ -31,7 +31,6 @@
 
 		<Icon data={home} scale="4" />
 		<ul>
-			npm
 			<li>Oauth / Identity Server</li>
 			<li>Embedded login form on protected pages</li>
 			<li>No pointless auth in SSR</li>
