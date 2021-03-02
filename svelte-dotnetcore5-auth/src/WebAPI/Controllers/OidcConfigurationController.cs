@@ -21,6 +21,12 @@ namespace SvelteStore.WebUI.Controllers
         public IActionResult GetClientRequestParameters([FromRoute]string clientId)
         {
             var parameters = ClientRequestParametersProvider.GetClientParameters(HttpContext, clientId);
+            var scopes = parameters["scope"];
+            if (!scopes.Contains("offline_access"))
+            {
+                scopes += " offline_access";
+                parameters["scope"] = scopes;
+            }
             return Ok(parameters);
         }
     }

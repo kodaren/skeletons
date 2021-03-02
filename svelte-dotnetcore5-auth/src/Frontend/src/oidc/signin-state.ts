@@ -35,10 +35,6 @@ export class SigninState extends State {
             this._code_verifier = state.code_verifier
         }
         
-        // if (this.code_verifier) {
-        //     this._code_challenge = await pkceUtil.generateCodeChallengeFromVerifier()
-        // }
-
         this._redirect_uri = state.redirect_uri
         this._return_uri = state.return_uri
         this._authority = state.authority

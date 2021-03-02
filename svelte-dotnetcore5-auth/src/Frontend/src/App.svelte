@@ -1,7 +1,7 @@
 <script>
   import { Router } from "@roxi/routify";
   import { routes } from "../.routify/routes";
-  import { codeFlowClient, IUser } from "./oidc/oidc-code-flow-client";
+  import { codeFlowClient } from "./oidc/oidc-code-flow-client";
   import { AppSettings } from "./common/app-settings";
   import { DispatchMessage } from "./common/dispatch-message";
 

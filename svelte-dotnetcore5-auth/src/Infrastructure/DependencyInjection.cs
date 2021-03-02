@@ -8,6 +8,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System.Linq;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.ApiAuthorization.IdentityServer;
 
 namespace SvelteStore.Infrastructure
 {
@@ -50,16 +53,22 @@ namespace SvelteStore.Infrastructure
                 //    options.ApiResources.AddApiResource("SvelteStore2API", resource =>
                 //        resource.WithScopes("a", "b", "c"));
                 //});
-                .AddApiAuthorization<ApplicationUser, ApplicationDbContext>()
+                .AddApiAuthorization<ApplicationUser, ApplicationDbContext>(options =>
+                {
+                    var client = options.Clients.SingleOrDefault(c => c.ClientId == "SvelteStore");
+                    client.AllowOfflineAccess = true;
+                    client.UpdateAccessTokenClaimsOnRefresh = true;
+                })
                 .AddRedirectUriValidator<CustomRedirectUriValidator>();
+            //x.AllowAuthorizationCodeFlow().AllowRefreshTokenFlow();
 
             services.AddTransient<IDateTime, DateTimeService>();
             services.AddTransient<IIdentityService, IdentityService>();
             services.AddTransient<ICsvFileBuilder, CsvFileBuilder>();
 
             services.AddAuthentication()
-                .AddIdentityServerJwt();
-
+                .AddIdentityServerJwt(); 
+            
             services.AddAuthorization(options =>
             {
                 options.AddPolicy("CanPurge", policy => policy.RequireRole("Administrator"));

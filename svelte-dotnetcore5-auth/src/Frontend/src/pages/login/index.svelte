@@ -4,10 +4,6 @@
 
 	async function doSignin() {
 		await codeFlowClient.authorizeRequest();
-		// const profile = await codeFlowClient.getUser();
-		// if (!profile) {
-		// 	await codeFlowClient.authorizeRequest(window.location.origin + "/");
-		// }
 	}
 
 
