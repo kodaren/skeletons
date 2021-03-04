@@ -1,12 +1,9 @@
 <script lang="ts">
-	
-	import { codeFlowClient } from "../../oidc/oidc-code-flow-client";
+	import { codeFlowClient } from "../../common/globals";
 
 	async function doSignin() {
 		await codeFlowClient.authorizeRequest();
 	}
-
-
 </script>
 
 <p>&nbsp;</p>

@@ -1,7 +1,8 @@
 <script lang="ts">
 	import { goto, ready } from "@roxi/routify";
 	import { onMount } from "svelte";
-	import { codeFlowClient, IUser } from "../../oidc/oidc-code-flow-client";
+import { codeFlowClient } from "../../common/globals";
+import type { IUser } from "../../oidc/oidc-code-flow-client";
 
 	let action = "none"
 	let message: string

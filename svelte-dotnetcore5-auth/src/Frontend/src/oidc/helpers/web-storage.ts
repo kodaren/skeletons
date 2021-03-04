@@ -45,8 +45,9 @@ export class WebStorage {
 
     clear(): Promise<void> {
         const keys = this._getAllKeys()
+        console.debug(keys)
         for(const key of keys) {
-            this._store.removeItem(key)
+            this._store.removeItem(this._prefix + key)
         }
         return Promise.resolve()
     }

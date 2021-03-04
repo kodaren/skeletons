@@ -1,14 +1,15 @@
 <script lang="ts">
-import { onMount } from "svelte";
-
+	import { onMount } from "svelte";
 	import Icon from "svelte-awesome";
 	import { beer, home } from "svelte-awesome/icons";
-	import { codeFlowClient } from "../oidc/oidc-code-flow-client";
 
-	let user: any;
+	import { codeFlowClient } from "../common/globals";
+import type { IUser } from "../oidc/oidc-code-flow-client";
+
+	let user: IUser;
 	onMount(() => {
-		//codeFlowClient.userSubject.subscribe((u: any) => user = u)
-	})
+		codeFlowClient.userSubject.subscribe((u: IUser) => user = u)
+	});
 
 	const links = [
 		["/index", "home", home],
@@ -20,7 +21,9 @@ import { onMount } from "svelte";
 		await codeFlowClient.authorizeRequest();
 	}
 
-	function doSignOut() {}
+	async function doSignOut() {
+		await codeFlowClient.signOut();
+	}
 
 </script>
 
@@ -38,8 +41,8 @@ import { onMount } from "svelte";
 	</div>
 
 	<div>
-		{#if $user}
-			<span>{$user.name}&nbsp;</span>
+		{#if user}
+			<span>{user.name}&nbsp;</span>
 			<a href="#logout" on:click={doSignOut}>Sign out</a>
 		{:else}<a href="#login" on:click={doSignIn}>Sign in</a>{/if}
 	</div>

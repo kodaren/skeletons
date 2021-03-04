@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { redirect } from "@roxi/routify";
-	import { codeFlowClient } from "../../oidc/oidc-code-flow-client";
+	import { codeFlowClient } from "../../common/globals";
 
 	/**
 	 *  We don't want the login page to visible to logged in user, so we redirect them

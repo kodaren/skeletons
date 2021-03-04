@@ -4,25 +4,26 @@
 	import { home } from "svelte-awesome/icons";
 	//import { faThumbsUp } from "@fortawesome/free-regular-svg-icons";
 
-	import { codeFlowClient, IUser } from "../oidc/oidc-code-flow-client";
 	import { onMount } from "svelte";
+	import { codeFlowClient } from "../common/globals";
+	import type { IUser } from "../oidc/oidc-code-flow-client";
 
 	let user: string;
 
 	onMount(async () => {
-		const profile = await codeFlowClient.getUser();
-		if (!profile) {
-			await codeFlowClient.authorizeRequest();
-		}
+		// const profile = await codeFlowClient.getUser();
+		// if (!profile) {
+		// 	await codeFlowClient.authorizeRequest();
+		// }
 
-		codeFlowClient.userSubject.subscribe((u: IUser) => (user = u && u.name));
+		// codeFlowClient.userSubject.subscribe(
+		// 	(u: IUser) => (user = u && u.name)
+		// );
 	});
 
 	metatags.title = "My Routify app";
 	metatags.description = "Description coming soon...";
 </script>
-
-<h3>Name: {user}</h3>
 
 <div class="center-all">
 	<div class="card">

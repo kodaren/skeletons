@@ -7,7 +7,7 @@
 //----------------------
 // ReSharper disable InconsistentNaming
 
-import { codeFlowClient } from "../oidc/oidc-code-flow-client"
+import { codeFlowClient } from "../common/globals"
 export class ClientBase {
     /**
      * request should use bearer authentication
