@@ -207,9 +207,6 @@ export class OidcCodeFlowClient {
         this.user = null;
         this.navigateToReturnUrl(returnUrl || "/");
 
-        // console.debug("resp", resp);
-        // console.debug("returnUrl", returnUrl);
-
         return Promise.resolve(resp)
     }
 
@@ -239,7 +236,6 @@ export class OidcCodeFlowClient {
         const path = returnUrl.replace(window.location.origin, "");
         this._redirectToPageEvent.dispatch(path)
     }
-
 
     private async addTokenValues(): Promise<void> {
         const token = await this.getTokenFromEndpoint()
