@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { ready } from '@roxi/routify'
 	import { onMount } from 'svelte';
-import { codeFlowClient } from '../../common/globals';
+import { userSubject } from '../../common/globals';
 import type { IUser } from '../../oidc/oidc-code-flow-client';
 	import Login from '../login/index.svelte'
 
@@ -9,12 +9,7 @@ import type { IUser } from '../../oidc/oidc-code-flow-client';
 	let user: string;
 	
 	onMount(async () => {
-		const profile = await codeFlowClient.getUser();
-		if (!profile) {
-			await codeFlowClient.authorizeRequest();
-		}
-
-		codeFlowClient.userSubject.subscribe((u: IUser) => (user = u && u.name));
+		userSubject.store.subscribe((u: IUser) => (user = u && u.name));
 	});
 
 	 /**

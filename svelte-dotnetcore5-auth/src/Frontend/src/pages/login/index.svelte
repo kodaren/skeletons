@@ -1,10 +1,22 @@
 <script lang="ts">
-	import { codeFlowClient } from "../../common/globals";
+import { onMount } from "svelte";
+
+	import { codeFlowClient, message } from "../../common/globals";
+
+	let msg: string;
+	onMount(() => {
+		message.store.subscribe((m: string) => (msg = m));
+	})
 
 	async function doSignin() {
 		await codeFlowClient.authorizeRequest();
 	}
 </script>
+
+{#if msg}
+	<div>{msg}</div>
+{/if}
+
 
 <p>&nbsp;</p>
 <div class="center-all">

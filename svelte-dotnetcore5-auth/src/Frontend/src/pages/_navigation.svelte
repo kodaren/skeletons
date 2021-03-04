@@ -3,12 +3,12 @@
 	import Icon from "svelte-awesome";
 	import { beer, home } from "svelte-awesome/icons";
 
-	import { codeFlowClient } from "../common/globals";
-import type { IUser } from "../oidc/oidc-code-flow-client";
+	import { codeFlowClient, userSubject } from "../common/globals";
+	import type { IUser } from "../oidc/oidc-code-flow-client";
 
 	let user: IUser;
 	onMount(() => {
-		codeFlowClient.userSubject.subscribe((u: IUser) => user = u)
+		userSubject.store.subscribe((u: IUser) => user = u)
 	});
 
 	const links = [

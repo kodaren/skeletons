@@ -2,6 +2,7 @@ import { SigninState } from './signin-state'
 import { webStorage } from './helpers/web-storage'
 import { SigninResponse } from './signin-response'
 import { SignoutResponse } from './signout-response';
+import { UrlUtility } from './helpers/url-utility';
 
 export interface IOidcCodeFlowClientSettings {
     options: IOidcClientSettings;
@@ -18,33 +19,8 @@ export class OidcCodeFlowClient {
         console.debug("init", clientSettings);
     }
 
-    private _message: IDispatchMessage<string>
-    private _redirectToPageEvent: IDispatchMessage<string>
-    private _userSubject: IDispatchMessage<IUser | null>
-
-    private idServerUris: IIdServerUris
-
-    private accessToken: IdToken;
-
-    private settings: IOidcClientSettings;
-    private options: IOidcClientSettings = {
-        authority: window.location.origin,
-        loadUserInfo: true
-    }
-    private signinResponse: SigninResponse
-
+    
     public user: IUser
-
-    public get message() {
-        return this._message.converter()
-    }
-
-    public get userSubject() {
-        return this._userSubject.converter()
-    }
-    public get redirectToPageEvent() {
-        return this._redirectToPageEvent.converter()
-    }
 
     public get isAuthenticated(): boolean {
         return !!this.user
@@ -67,9 +43,9 @@ export class OidcCodeFlowClient {
         }
 
         this.options = { ...options }
-        this._message = message
-        this._redirectToPageEvent = redirectToPageEvent
-        this._userSubject = userSubject
+        this.message = message
+        this.redirectToPageEvent = redirectToPageEvent
+        this.userSubject = userSubject
         this.idServerUris = {
             AccessToken: `${options.authority}/connect/token`,
             AuthorizeRequest: `${options.authority}/connect/authorize`,
@@ -97,25 +73,10 @@ export class OidcCodeFlowClient {
         if (resp.ok) {
             const user = await resp.json()
             this.user = user as IUser
-            this._userSubject.dispatch(this.user)
+            this.userSubject.dispatch(this.user)
             return user;
         }
         throw new Error("Could not get user info:\n" + resp.statusText)
-
-    }
-
-    public async getClientSettings(): Promise<IOidcClientSettings> {
-
-        if (this.settings) {
-            return Promise.resolve(this.settings)
-        }
-
-        const response = await fetch(`${this.options.authority}/_configuration/${this.options.client_id}`)
-        if (!response.ok) {
-            throw new Error(`Could not load settings for '${this.options.client_id}'`)
-        }
-
-        return await response.json()
 
     }
 
@@ -141,8 +102,12 @@ export class OidcCodeFlowClient {
 
         returnUrl = returnUrl || window.location.pathname
 
-        const settings = await this.getClientSettings()
-
+        const settings = await this.getClientSettings();
+        if (!settings) {
+            return;
+        }
+        this.settings = settings;
+        
         const signInState = new SigninState({
             nonce: true, authority: settings.authority, client_id: settings.client_id,
             return_uri: returnUrl,
@@ -170,15 +135,6 @@ export class OidcCodeFlowClient {
 
     }
 
-    public async getSigninState(): Promise<SigninState> {
-        const state = await webStorage.get(this.signinResponse && this.signinResponse.state)
-        if (!state) {
-            return null;
-        }
-        return SigninState.fromStorageString(state)
-
-    }
-
     public async processSigninResponse(): Promise<SigninResponse> {
         const useQuery = true
         const delimiter = useQuery ? "?" : "#"
@@ -186,7 +142,10 @@ export class OidcCodeFlowClient {
         await this.addTokenValues()
 
         const user = await this.getUser()
-        this._message.dispatch(user ? "Userinfo has been loaded" : "Failed to load user info")
+        if (!user)
+        {
+            this.message.dispatch("Failed to load user info")
+        }
 
         const state = await this.getSigninState()
         this.navigateToReturnUrl(state.return_uri)
@@ -215,14 +174,12 @@ export class OidcCodeFlowClient {
         console.log("Action", action);
         switch (action) {
             case "login-callback":
-                this._message.dispatch("Processing login callback");
                 await this.processSigninResponse();
                 break;
             case "login-failed":
-                this._message.dispatch("Failed to login");
+                this.message.dispatch("Failed to login");
                 break;
             case "logout-callback":
-                this._message.dispatch("Processing logout callback");
                 this.processSignoutResponse();
                 break;
             default:
@@ -230,11 +187,43 @@ export class OidcCodeFlowClient {
         }
     }
 
-    public navigateToReturnUrl(returnUrl: string) {
-        // It's important that we do a replace here so that we remove the callback uri with the
-        // fragment containing the tokens from the browser history.
+    public async getAccessToken(): Promise<string> {
+
+        let token = await this.getToken()
+        return token && token.access_token
+
+    }
+
+
+    private async getClientSettings(): Promise<IOidcClientSettings> {
+
+        if (this.settings) {
+            return Promise.resolve(this.settings)
+        }
+
+        const response = await fetch(`${this.options.authority}/_configuration/${this.options.client_id}`)
+            .catch(reason => this.message.dispatch("Failed to get OIDC client settings. Is the server available?"))
+
+        if (response && response.ok)
+        {
+            return await response.json()
+        }
+        return null;
+
+    }
+
+    private async getSigninState(): Promise<SigninState> {
+        const state = await webStorage.get(this.signinResponse && this.signinResponse.state)
+        if (!state) {
+            return null;
+        }
+        return SigninState.fromStorageString(state)
+
+    }
+
+    private navigateToReturnUrl(returnUrl: string) {
         const path = returnUrl.replace(window.location.origin, "");
-        this._redirectToPageEvent.dispatch(path)
+        this.redirectToPageEvent.dispatch(path)
     }
 
     private async addTokenValues(): Promise<void> {
@@ -242,7 +231,6 @@ export class OidcCodeFlowClient {
         this.accessToken = token;
         await webStorage.set("id_token", token.id_token);
         await webStorage.set("refresh_token", token.refresh_token)
-        this._message.dispatch(`access_token: ${token.access_token}`)
         this.signinResponse.id_token = token.id_token
         this.signinResponse.access_token = token.access_token
         this.signinResponse.expires_in = token.expires_in
@@ -285,21 +273,11 @@ export class OidcCodeFlowClient {
             }
         }
 
-        if (!this.accessToken) {
-            this.authorizeRequest("/");
-        }
         return this.accessToken;
 
     }
 
-    public async getAccessToken(): Promise<string> {
-
-        let token = await this.getToken()
-        return token && token.access_token
-
-    }
-
-    public async getTokenFromEndpoint(): Promise<IdToken> {
+    private async getTokenFromEndpoint(): Promise<IdToken> {
         const state = await this.getSigninState()
         if (!state) {
             throw new Error('Invalid signin state')
@@ -326,6 +304,21 @@ export class OidcCodeFlowClient {
         return await response.json()
 
     }
+
+    private message: IDispatchMessage<string>
+    private redirectToPageEvent: IDispatchMessage<string>
+    private userSubject: IDispatchMessage<IUser | null>
+
+    private idServerUris: IIdServerUris
+
+    private accessToken: IdToken;
+
+    private settings: IOidcClientSettings;
+    private options: IOidcClientSettings = {
+        authority: window.location.origin,
+        loadUserInfo: true
+    }
+    private signinResponse: SigninResponse
 
 }
 

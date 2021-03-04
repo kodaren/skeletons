@@ -11,14 +11,6 @@
 	let user: string;
 
 	onMount(async () => {
-		// const profile = await codeFlowClient.getUser();
-		// if (!profile) {
-		// 	await codeFlowClient.authorizeRequest();
-		// }
-
-		// codeFlowClient.userSubject.subscribe(
-		// 	(u: IUser) => (user = u && u.name)
-		// );
 	});
 
 	metatags.title = "My Routify app";

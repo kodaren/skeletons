@@ -21,6 +21,10 @@ export class DispatchMessage<T> implements IDispatchStore<T>  {
         return this.store
     }
 
+    public get message(): Writable<T> {
+        return this.store;
+    }
+
     public converter(): any {
         return this.store
     }
