@@ -1,5 +1,5 @@
 import { OidcCodeFlowClient, IOidcCodeFlowClientSettings, IUser } from "../oidc/oidc-code-flow-client";
-import { AppSettings } from "./app-settings";
+import { appSettings } from "./app-settings";
 import { DispatchMessage } from "./dispatch-message";
 
 export class Globals {
@@ -12,8 +12,8 @@ export class Globals {
         const settings: IOidcCodeFlowClientSettings =
         {
             options: {
-                client_id: AppSettings.ClientId,
-                authority: AppSettings.Authority,
+                client_id: appSettings.CLIENT_ID,
+                authority: appSettings.AUTHORITY_URL
             },
             message: this.message,
             redirectToPageEvent: this.redirectToPageEvent,

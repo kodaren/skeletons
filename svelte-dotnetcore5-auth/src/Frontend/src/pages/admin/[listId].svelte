@@ -4,12 +4,13 @@
         PaginatedListOfTodoItemDto,
         TodoItemsClient,
     } from "../../app/web-api-client";
+import { appSettings } from "../../common/app-settings";
 
     export let listId: number
 
 	$ready();
 
-    const client = new TodoItemsClient("https://localhost:44300");
+    const client = new TodoItemsClient(appSettings.API_URL);
 
 
     async function getTodoItems(): Promise<PaginatedListOfTodoItemDto> {

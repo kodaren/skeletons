@@ -11,7 +11,8 @@ import getConfig from '@roxi/routify/lib/utils/config'
 import autoPreprocess from 'svelte-preprocess'
 import postcssImport from 'postcss-import'
 import { injectManifest } from 'rollup-plugin-workbox'
-
+import {config} from 'dotenv';
+import replace from '@rollup/plugin-replace';
 
 const { distDir } = getConfig() // use Routify's distDir for SSOT
 const assetsDir = 'assets'
@@ -49,6 +50,21 @@ export default {
         chunkFileNames:`[name]${production && '-[hash]' || ''}.js`
     },
     plugins: [
+        replace({
+            include: '**/app-settings.js',
+            preventAssignment: true,
+            __myapp: JSON.stringify({
+                env: {
+                  isProd: production,
+                  ...config().parsed // attached the .env config
+                }
+              }),
+            // stringify the object
+            // 'isProd': production,
+            // '__CLIENT_ID': 'SvelteStore2',
+            // '__AUTHORITY_URL': 'https://auth.kodaren.com',
+            // '__API_URL': 'https://www.kodaren.com'
+          }),
         svelte({
             dev: !production, // run-time checks      
             // Extract component CSS — better performance
@@ -71,7 +87,8 @@ export default {
 		typescript({
 			sourceMap: !production,
 			inlineSources: !production
-		}),
+		},
+        ),
 
         production && terser(),
         !production && !isNollup && serve(),
