@@ -28,7 +28,7 @@
     {:then paginatedListOfitems}
         <h1>Todo Items ({paginatedListOfitems.totalCount})</h1>
         <ul>
-            {#each paginatedListOfitems.items as todoItem, i}
+            {#each paginatedListOfitems.items as todoItem}
                 <li>{todoItem.title} {todoItem.done}</li>
             {/each}
         </ul>

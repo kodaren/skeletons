@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { onMount } from "svelte";
-	import Icon from "svelte-awesome";
-	import { beer, home } from "svelte-awesome/icons";
+	import Icon from 'svelte-awesome/components/Icon.svelte'
+	import * as icons from "svelte-awesome/icons";
 
 	import { codeFlowClient } from "../common/globals";
-import type { IUser } from "../oidc/oidc-code-flow-client";
+	import type { IUser } from "../oidc/oidc-code-flow-client";
 
 	let user: IUser;
 	onMount(() => {
@@ -12,7 +12,7 @@ import type { IUser } from "../oidc/oidc-code-flow-client";
 	});
 
 	const links = [
-		["/index", "home", home],
+		["/index", "home", icons.home],
 		["/about", "about"],
 		["/admin", "admin"],
 	];
@@ -33,7 +33,7 @@ import type { IUser } from "../oidc/oidc-code-flow-client";
 		{#each links as [path, name, icon]}
 			<a href={path}>
 				{#if icon}
-					<Icon data={icon} scale="2" />
+					<Icon data={icon} scale={2}/>
 				{/if}
 				{name}
 			</a>
